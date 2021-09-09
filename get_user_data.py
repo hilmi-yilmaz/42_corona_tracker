@@ -9,6 +9,10 @@ class API42:
     Connect to the API and send requests.
     """
     def __init__(self):
+        """
+        Reads the config file and saves the data as attributes.
+        Requests token with the request_token function below.
+        """
         with open("config.yaml", "r") as stream:
             config = yaml.load(stream, Loader=yaml.FullLoader)
             self.client_id = config["client_id"]
@@ -19,6 +23,15 @@ class API42:
         self.token = self.request_token()
 
     def request_token(self):
+        """
+        Requests the access token from the 42API. This token is needed to make use of the API.
+
+        Arguments:
+            None
+
+        Returns:
+            access_token
+        """
         query = {"client_id": self.client_id, "client_secret": self.client_secret, "grant_type": "client_credentials"}
         response = requests.post(self.token_uri, query)
         if response.status_code != 200:
@@ -54,7 +67,7 @@ class API42:
 
 
 api = API42()
-payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50} #, "page[number]":0}
+payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}
 data = api.get("locations", payload)
 
 i = 0
