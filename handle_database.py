@@ -1,8 +1,9 @@
 import sys
+import time
 from datetime import datetime
 from mysql.connector import connect, Error
-from getpass import getpass
-from get_user_data import API42
+#from getpass import getpass
+
 
 class DatabaseOperations:
     """
@@ -34,9 +35,13 @@ class DatabaseOperations:
         return (connection)
 
     def get_active_students(self, data):
+        """
+        Get the currently active people.
+        """
+        currently_active = [] # the people that are currently active, this can be compared to self.active
         for user in data:
-            self.active.append(user["id"])
-        print(self.active)
+            currently_active.append(user["id"])
+        return (currently_active)
 
     def read_data(self, query):
         self.cursor.execute(query)
@@ -44,33 +49,47 @@ class DatabaseOperations:
         for row in result:
             print(row)
 
-    
-    def insert_data(self, data):
-        # Create tables if tables don't exist yet
+    def get_recently_logged_off(self, currently_active):
+        """
+        Get the session id that just logged off. This session will be put into the database.
+        """
+        logged_off = list(set(self.active) - set(currently_active))
+        return (logged_off)
+
+
+
+    def insert_data(self, data, currently_active):
+        # Create table if table doesn't exist yet
         self.extract_hosts(data)
 
-        # Insert user data
-        for user in data:
+        # Get the difference between the active and currently_active people
+        logged_off = list(set(self.active) - set(currently_active))
+        #print(logged_off)
 
-            host = user["host"][:-9]
-            #begin_at = datetime.strptime(user["begin_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
-            #end_at = datetime.strptime(user["end_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
-            insert_login_session_query = """
-            INSERT INTO {}
-            (session_id, login, begin_at, end_at)
-            VALUES (%s, %s, %s, %s)
-            """.format(host)#, user["user"]["login"], user["begin_at"])#, user["end_at"])
-            #print(insert_login_session_query)
-            #datetime_object = datetime.strptime(user["begin_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
-            #print(datetime_object)
-            self.cursor.execute(insert_login_session_query, [user["id"], user["user"]["login"], user["begin_at"], user["end_at"]])
-        self.connector.commit()
+        # Request the api for the session which logged off
+        
+
+        # Insert user data
+        # for user in data:
+
+        #     host = user["host"][:-9]
+        #     if (user["id"] not in self.active):
+        #         #begin_at = datetime.strptime(user["begin_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
+        #         #end_at = datetime.strptime(user["end_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
+        #         insert_login_session_query = """
+        #         INSERT INTO {}
+        #         (session_id, login, begin_at, end_at)
+        #         VALUES (%s, %s, %s, %s)
+        #         """.format(host)
+        #         #print(insert_login_session_query)
+        #         self.cursor.execute(insert_login_session_query, [user["id"], user["user"]["login"], user["begin_at"], user["end_at"]])
+        # self.connector.commit()
             
 
     def extract_hosts(self, data):
         """
-        Extract the computers from the data (for example f0r1s6.codam.nl).
-        If there is no table for this specific computer yet, create one.
+        Extract the hosts from the data (for example f0r1s6.codam.nl).
+        If there is no table for this specific host yet, create one.
         """
         for user in data:
             host = user["host"][:-9]
@@ -78,9 +97,10 @@ class DatabaseOperations:
             self.cursor.execute(query)
             result = self.cursor.fetchone()
             if result:
-                print("{} does exist as a table".format(host))
+                #print("{} does exist as a table".format(host))
+                pass
             else:
-                print("{} doesn't exist as a table. Creating...".format(host))
+                #print("{} doesn't exist as a table. Creating...".format(host))
                 self.create_host_table(host)
 
     def create_host_table(self, host_name):
@@ -97,17 +117,3 @@ class DatabaseOperations:
         '''.format(host_name)
         self.cursor.execute(create_host_table_query)
         self.connector.commit()
-
-
-
-
-
-# Instantiate a DatabaseOperations object
-db_operations = DatabaseOperations("codam_corona_tracker", "hilmi", "hilmi")
-
-# Perform a query
-api = API42()
-payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}
-data = api.get("locations", payload) # data is a list
-db_operations.get_active_students(data)
-db_operations.insert_data(data)

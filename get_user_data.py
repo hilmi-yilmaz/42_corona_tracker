@@ -61,14 +61,14 @@ class API42:
                 break
             params["page[number]"] += 1
             data.extend(response.json())
-            time.sleep(0.5)
+            time.sleep(1)
 
         return (data)
 
 
 if __name__ == "__main__":
     api = API42()
-    payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}
+    payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}#, "filter[id]": 13024171}
     data = api.get("locations", payload)
 
     i = 0
