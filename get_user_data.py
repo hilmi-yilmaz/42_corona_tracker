@@ -66,13 +66,14 @@ class API42:
         return (data)
 
 
-api = API42()
-payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}
-data = api.get("locations", payload)
+if __name__ == "__main__":
+    api = API42()
+    payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}
+    data = api.get("locations", payload)
 
-i = 0
-for element in data:
-    print(element)
-    print("")
-    i += 1
-print(i)
+    i = 0
+    for element in data:
+        print(element)
+        print("")
+        i += 1
+    print(i)
