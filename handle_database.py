@@ -1,51 +1,8 @@
 import sys
-
+from datetime import datetime
 from mysql.connector import connect, Error
 from getpass import getpass
 from get_user_data import API42
-
-# Get the data from the 42 API
-# api = API42()
-# payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}
-# data = api.get("locations", payload)
-
-# # Print the data obtained from api request
-# i = 0
-# for element in data:
-#     print(element)
-#     print("")
-#     i += 1
-# print(i)
-
-# # Connect to the database with mysql-connector
-# try:
-#     connection = connect(
-#         host="localhost",
-#         user="hilmi",
-#         password="hilmi",
-#         database="classicmodels")
-# except Error as e:
-#     print(e)
-#     connection.close()
-
-# # Cursor is used for executing SQL queries, which abstracts away the access to database records
-# cursor = connection.cursor()
-
-# # Show the tables
-# cursor.execute("show tables")
-# for tables in cursor:
-#     print(tables)
-
-# # Select some data from employees table
-# select_employees_query = "select * from employees"
-# with connection.cursor() as cursor:
-#     cursor.execute(select_employees_query)
-#     result = cursor.fetchall()
-#     for row in result:
-#         print(row)
-
-# # Close the connection
-# connection.close()
 
 class DatabaseOperations:
     """
@@ -58,6 +15,7 @@ class DatabaseOperations:
         self.password = password
         self.connector = self.connect_to_database()
         self.cursor = self.connector.cursor()
+        self.active = [] # Contains login session id
 
     def connect_to_database(self):
         try:
@@ -72,6 +30,11 @@ class DatabaseOperations:
         print(f"Succesfully connected to database {self.db_name}.")
         return (connection)
 
+    def get_active_students(self, data):
+        for user in data:
+            self.active.append(user["id"])
+        print(self.active)
+
     def read_data(self, query):
         self.cursor.execute(query)
         result = self.cursor.fetchall()
@@ -84,8 +47,22 @@ class DatabaseOperations:
         self.extract_hosts(data)
 
         # Insert user data
-        #for user in data:
+        for user in data:
 
+            host = user["host"][:-9]
+            #begin_at = datetime.strptime(user["begin_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
+            #end_at = datetime.strptime(user["end_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
+            insert_login_session_query = """
+            INSERT INTO {}
+            (session_id, login, begin_at, end_at)
+            VALUES (%s, %s, %s, %s)
+            """.format(host)#, user["user"]["login"], user["begin_at"])#, user["end_at"])
+            #print(insert_login_session_query)
+            #datetime_object = datetime.strptime(user["begin_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
+            #print(datetime_object)
+            self.cursor.execute(insert_login_session_query, [user["id"], user["user"]["login"], user["begin_at"], user["end_at"]])
+        self.connector.commit()
+            
 
     def extract_hosts(self, data):
         """
@@ -111,8 +88,8 @@ class DatabaseOperations:
         CREATE TABLE {}(
             session_id INT,
             login VARCHAR(100),
-            begin_at DATETIME,
-            end_at DATETIME
+            begin_at VARCHAR(100),
+            end_at VARCHAR(100)
         )
         '''.format(host_name)
         self.cursor.execute(create_host_table_query)
@@ -129,4 +106,5 @@ db_operations = DatabaseOperations("codam_corona_tracker", "hilmi", "hilmi")
 api = API42()
 payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}
 data = api.get("locations", payload) # data is a list
+db_operations.get_active_students(data)
 db_operations.insert_data(data)
