@@ -24,6 +24,9 @@ class DatabaseOperations:
                 user=self.user,
                 password=self.password,
                 database=self.db_name)
+            if connection.is_connected():
+                db_info = connection.get_server_info()
+                print(f"Connected to MySQL server version {db_info}")
         except Error as e:
             print(f"Cannot connect to {self.db_name}: {e}")
             sys.exit(1)
