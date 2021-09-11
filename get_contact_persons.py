@@ -19,3 +19,8 @@ print(query_login)
 # Store all the data of the infected person
 data = db_operations.read_data(query_login)
 print(data)
+
+# Find for each login session of the infected person, which hosts where nearby
+
+
+# Make query to all those hosts within timeframe of log in period of infected person
