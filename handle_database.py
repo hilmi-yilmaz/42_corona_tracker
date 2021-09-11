@@ -2,8 +2,6 @@ import sys
 import time
 from datetime import datetime
 from mysql.connector import connect, Error
-#from getpass import getpass
-
 
 class DatabaseOperations:
 	"""
@@ -52,9 +50,7 @@ class DatabaseOperations:
 
 	def read_data(self, query):
 		self.cursor.execute(query)
-		result = self.cursor.fetchall()
-		for row in result:
-			print(row)
+		return (self.cursor.fetchall())
 
 	def insert_data(self, who_logged_off):
 		# Create table if table doesn't exist yet

@@ -3,7 +3,7 @@ import time
 from get_user_data import API42
 from handle_database import DatabaseOperations
 
-# Set interval variable for while loop
+# Set interval variable for while loop in seconds
 # If someone logs in and off in less time than the interval perdiod, that person will not be registered
 interval = 600
 
@@ -12,9 +12,9 @@ db_operations = DatabaseOperations("codam_corona_tracker", "hilmi", "hilmi")
 
 # Instantiate an API42 object for handling API requests 
 api = API42()
-payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 50}
+payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 100}
 
-# Continously get data from the API and put into database
+# Continuously get data from the API and put into database
 while True:
 	data = api.get("locations", payload) # data is a list
 
@@ -31,7 +31,8 @@ while True:
 		tmp_payload = payload
 		tmp_payload["filter[id]"] = session
 		who_logged_off.append(api.get("locations", tmp_payload))
-	print(f"People who logged off in the last {interval} minutes: {who_logged_off}")
+	print(f"People who logged off in the last {interval} seconds: {who_logged_off}")
+	print("")
 
 	db_operations.insert_data(who_logged_off)
 
