@@ -7,6 +7,8 @@ from mysql.connector import connect, Error
 class DatabaseOperations:
 	"""
 	Handles all operations related to the mysql database.
+	Including connecting to the database,
+	inserting and reading data from the database.
 	"""
 
 	def __init__(self, db_name, user, password):
@@ -18,6 +20,15 @@ class DatabaseOperations:
 		self.active = [] # Contains login session id
 
 	def connect_to_database(self):
+		"""
+		Connects to the database.
+
+		Arguments:
+			None
+
+		Returns:
+			connection: Connection object contains all that's needed to communicate with the database.
+		"""
 		try:
 			connection = connect(
 				host="localhost",
@@ -50,6 +61,12 @@ class DatabaseOperations:
 	def get_recently_logged_off(self, currently_active: List[Dict]) -> List[Dict]:
 		"""
 		Get the session id that just logged off. This session will be put into the database.
+		
+		Arguments:
+			currently_active: (List[Dict]) contains currently logged in users.
+
+		Returns:
+			logged_off: (List[Dict]) contains logged off users.
 		"""
 		logged_off = list(set(self.active) - set(currently_active))
 		return (logged_off)
@@ -59,15 +76,24 @@ class DatabaseOperations:
 		return (self.cursor.fetchall())
 
 	def insert_data(self, who_logged_off: List[Dict]):
+		""" 
+		Inserts the people who logged off into the database.
+
+		Arguments:
+			who_logged_off: (List[Dict]) contains users who logged off.
+
+		Returns:
+			None
+		"""
 		# Create table if table doesn't exist yet
 		self.extract_hosts(who_logged_off)
 
 		# Insert user data
 		for user in who_logged_off:
-			host = user["host"][:-9]
+			host: str = user["host"][:-9]
 			#begin_at = datetime.strptime(user["begin_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
 			#end_at = datetime.strptime(user["end_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
-			insert_login_session_query = """
+			insert_login_session_query: str = """
 			INSERT INTO {}
 			(session_id, login, begin_at, end_at)
 			VALUES (%s, %s, %s, %s)
@@ -81,6 +107,12 @@ class DatabaseOperations:
 		"""
 		Extract the hosts from the data (for example f0r1s6.codam.nl).
 		If there is no table for this specific host yet, create one.
+
+		Arguments:
+			data: (List[Dict]) contains user data.
+
+		Returns:
+			None
 		"""
 		for user in data:
 			host: str = user["host"][:-9]
@@ -93,7 +125,7 @@ class DatabaseOperations:
 
 	def create_host_table(self, host_name: str):
 		"""
-		Create a table with the host_name.
+		Create a table with host_name.
 		"""
 		create_host_table_query = '''
 		CREATE TABLE {}(
