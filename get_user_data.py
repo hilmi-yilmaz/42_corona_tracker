@@ -24,7 +24,7 @@ class API42:
 
 		self.token = self.request_token()
 
-	def request_token(self):
+	def request_token(self) -> str:
 		"""
 		Requests the access token from the 42API. This token is needed to make use of the API.
 
@@ -32,13 +32,13 @@ class API42:
 			None
 
 		Returns:
-			access_token
+			access_token: (str) the access token to make requests with.
 		"""
 		query = {"client_id": self.client_id, "client_secret": self.client_secret, "grant_type": "client_credentials"}
 		response = requests.post(self.token_uri, query)
 		if response.status_code != 200:
 			print(f"Can't get token --> {response.status_code}: {response.reason}. Check your client ID and client secret.")
-			exit(1)
+			sys.exit(1)
 		return (response.json()["access_token"])
 
 	def get(self, name, params) -> List[Dict]:
@@ -51,7 +51,7 @@ class API42:
 			params: the payload to send with the request.
 
 		Returns:
-			data: list containing all responses in json format
+			data: list containing all responses in json format.
 		"""
 		endpoint = os.path.join(self.endpoint, name)
 		params["access_token"] = self.token

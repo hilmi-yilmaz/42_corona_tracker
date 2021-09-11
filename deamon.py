@@ -1,6 +1,5 @@
 import time
 from typing import List, Dict
-
 from get_user_data import API42
 from handle_database import DatabaseOperations
 

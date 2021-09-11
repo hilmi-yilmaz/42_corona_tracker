@@ -24,7 +24,7 @@ class DatabaseOperations:
 		Connects to the database.
 
 		Arguments:
-			None
+			None.
 
 		Returns:
 			connection: Connection object contains all that's needed to communicate with the database.
@@ -45,13 +45,13 @@ class DatabaseOperations:
 
 	def get_active_students(self, data: List[Dict]) -> List[Dict]:
 		"""
-		Get the currently active people.
+		Get the currently active users.
 
 		Arguments:
-			data: list with user data from the 42 api
+			data: (List[Dict]) contains user data from the 42 API.
 
 		Returns:
-			currently_active: list of currently active session_id's 
+			currently_active: (List[Dict]) contains currently active session_id's. 
 		"""
 		currently_active = [] # the people that are currently active, this can be compared to self.active
 		for user in data:
@@ -60,7 +60,7 @@ class DatabaseOperations:
 
 	def get_recently_logged_off(self, currently_active: List[Dict]) -> List[Dict]:
 		"""
-		Get the session id that just logged off. This session will be put into the database.
+		Get the users that just logged off.
 		
 		Arguments:
 			currently_active: (List[Dict]) contains currently logged in users.
@@ -83,7 +83,7 @@ class DatabaseOperations:
 			who_logged_off: (List[Dict]) contains users who logged off.
 
 		Returns:
-			None
+			None.
 		"""
 		# Create table if table doesn't exist yet
 		self.extract_hosts(who_logged_off)
@@ -112,7 +112,7 @@ class DatabaseOperations:
 			data: (List[Dict]) contains user data.
 
 		Returns:
-			None
+			None.
 		"""
 		for user in data:
 			host: str = user["host"][:-9]
@@ -126,6 +126,9 @@ class DatabaseOperations:
 	def create_host_table(self, host_name: str):
 		"""
 		Create a table with host_name.
+
+		Arguments:
+			host_name: (str) name of the host.
 		"""
 		create_host_table_query = '''
 		CREATE TABLE {}(
