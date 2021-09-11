@@ -1,5 +1,6 @@
 import sys
 import time
+from typing import List, Dict
 from datetime import datetime
 from mysql.connector import connect, Error
 
@@ -26,22 +27,27 @@ class DatabaseOperations:
 			if connection.is_connected():
 				db_info = connection.get_server_info()
 				print(f"Connected to MySQL server version {db_info}")
-		except Error as e:
-			print(f"Cannot connect to {self.db_name}: {e}")
-			sys.exit(1)
+		except Error as err:
+			sys.exit(f"Cannot connect to {self.db_name}: {err}")
 		print(f"Succesfully connected to database {self.db_name}.")
 		return (connection)
 
-	def get_active_students(self, data):
+	def get_active_students(self, data: List[Dict]) -> List[Dict]:
 		"""
 		Get the currently active people.
+
+		Arguments:
+			data: list with user data from the 42 api
+
+		Returns:
+			currently_active: list of currently active session_id's 
 		"""
 		currently_active = [] # the people that are currently active, this can be compared to self.active
 		for user in data:
-			currently_active.append(user["id"])
+			currently_active.append(user)
 		return (currently_active)
 
-	def get_recently_logged_off(self, currently_active):
+	def get_recently_logged_off(self, currently_active: List[Dict]) -> List[Dict]:
 		"""
 		Get the session id that just logged off. This session will be put into the database.
 		"""
@@ -52,7 +58,7 @@ class DatabaseOperations:
 		self.cursor.execute(query)
 		return (self.cursor.fetchall())
 
-	def insert_data(self, who_logged_off):
+	def insert_data(self, who_logged_off: List[Dict]):
 		# Create table if table doesn't exist yet
 		self.extract_hosts(who_logged_off)
 
@@ -71,21 +77,21 @@ class DatabaseOperations:
 		self.connector.commit()
 			
 
-	def extract_hosts(self, data):
+	def extract_hosts(self, data: List[Dict]):
 		"""
 		Extract the hosts from the data (for example f0r1s6.codam.nl).
 		If there is no table for this specific host yet, create one.
 		"""
 		for user in data:
-			host = user["host"][:-9]
-			query = "show tables like \'" + str(host) + "\';"
+			host: str = user["host"][:-9]
+			query: str = "show tables like \'" + str(host) + "\';"
 			self.cursor.execute(query)
 			result = self.cursor.fetchone()
 			if not result:
 				#print("{} doesn't exist as a table. Creating...".format(host))
 				self.create_host_table(host)
 
-	def create_host_table(self, host_name):
+	def create_host_table(self, host_name: str):
 		"""
 		Create a table with the host_name.
 		"""

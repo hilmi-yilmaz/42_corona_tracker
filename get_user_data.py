@@ -3,6 +3,8 @@ import json
 import requests
 import yaml
 import time
+import sys
+from typing import List, Dict
 
 class API42:
 	"""
@@ -39,7 +41,7 @@ class API42:
 			exit(1)
 		return (response.json()["access_token"])
 
-	def get(self, name, params):
+	def get(self, name, params) -> List[Dict]:
 		"""
 		The get function returns the response (json) asked for by the name parameter.
 		It loops over all pages.
@@ -47,6 +49,9 @@ class API42:
 		Arguments:
 			name: part of the api you want to ask.
 			params: the payload to send with the request.
+
+		Returns:
+			data: list containing all responses in json format
 		"""
 		endpoint = os.path.join(self.endpoint, name)
 		params["access_token"] = self.token
@@ -55,17 +60,23 @@ class API42:
 		while True:
 			try:
 				response = requests.get(endpoint, params)
-				response.raise_for_status(status_code=401)
+				response.raise_for_status() # Returns None if good request, otherwise raises error
+			# Handle HTTP errors
 			except requests.exceptions.HTTPError as err:
-				self.token = self.request_token()
-				params["access_token"] = self.token
-				response = requests.get(endpoint, params)
-			# except requests.exceptions.RequestException as e:
-			# 	raise SystemExit("")
+				if err.response.status_code == 401:
+					print("Token expired, asking for new one...")
+					self.token = self.request_token()
+					params["access_token"] = self.token
+					response = requests.get(endpoint, params)
+				else:
+					sys.exit(err)
+			# Handle other error like ConnectionError, Timeout, TooManyRedirects
+			except requests.exceptions.RequestException as err:
+				sys.exit(err)
 				
-			if response.status_code != 200:
-				print(f"{endpoint} --> {response.status_code}: {response.reason}")
-				exit(1)
+			# if response.status_code != 200:
+			# 	print(f"{endpoint} --> {response.status_code}: {response.reason}")
+			# 	exit(1)
 			if len(response.json()) == 0:
 				break
 			params["page[number]"] += 1
@@ -73,7 +84,6 @@ class API42:
 			time.sleep(1)
 
 		return (data)
-
 
 if __name__ == "__main__":
 	api = API42()

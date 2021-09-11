@@ -1,4 +1,5 @@
 import time
+from typing import List, Dict
 
 from get_user_data import API42
 from handle_database import DatabaseOperations
@@ -16,21 +17,21 @@ payload = {"filter[campus_id]":14, "filter[active]": "true", "page[size]": 100}
 
 # Continuously get data from the API and put into database
 while True:
-	data = api.get("locations", payload) # data is a list
+	data: List[Dict] = api.get("locations", payload) # data is a list
 
 	# Get active people data
-	currently_active = db_operations.get_active_students(data)
+	currently_active: List[Dict] = db_operations.get_active_students(data)
 	print(f"Currently active students: {currently_active}")
 
-	# Get the recently logged off session
-	logged_off = db_operations.get_recently_logged_off(currently_active)
+	# Get the recently logged off sessions
+	logged_off: List[Dict] = db_operations.get_recently_logged_off(currently_active)
 
 	# Check whether someone logged off, if so, query and add to the database
-	who_logged_off = []
-	for session in logged_off:
+	who_logged_off: List[Dict] = []
+	for user in logged_off:
 		tmp_payload = payload
-		tmp_payload["filter[id]"] = session
-		who_logged_off.append(api.get("locations", tmp_payload))
+		tmp_payload["filter[id]"] = user
+		who_logged_off.extend(api.get("locations", tmp_payload))
 	print(f"People who logged off in the last {interval} seconds: {who_logged_off}")
 	print("")
 
