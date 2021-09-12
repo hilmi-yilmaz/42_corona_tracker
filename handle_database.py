@@ -93,7 +93,7 @@ class DatabaseOperations:
 		self.cursor.execute(query)
 		return (self.cursor.fetchall())
 
-	def insert_data(self, who_logged_off: List[Dict]):
+	def insert_data(self, who_logged_off: List[Dict]) -> None:
 		""" 
 		Inserts the people who logged off into the database.
 
@@ -117,3 +117,25 @@ class DatabaseOperations:
 			self.cursor.execute(insert_login_session_query, [
 				user["id"], user["user"]["login"], begin_at, end_at])
 		self.connector.commit()
+
+	def remove_old_data(self, x: int, time_frame: str):
+		"""
+		Removes data from the database that is 'days_old' days old.
+
+		Arguments:
+			x: (int) amount of time in timeframe.
+			time_frame: (str) can any of week, day, hour.
+
+		Returns:
+			None.
+		"""
+
+		# Get all the tables first
+		response = self.read_data("show tables")
+		all_tables = [table for (table, ) in response]
+
+		for table in all_tables:
+			query_delete_old_data = """
+			select * from {} where begin_at < date_sub(now(), interval {} {})
+			""".format(table, x, "hour")
+			data = self.read_data(query_delete_old_data)
