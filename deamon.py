@@ -21,7 +21,7 @@ while True:
 
     # Get active people data
     logged_in: List[Dict] = db_operations.get_active_students(data)
-    print(f"Currently active students: {logged_in}")
+    print(f"Currently active students:\n{logged_in}")
 
     # Get the recently logged off sessions
     logged_off: List[Dict] = db_operations.get_recently_logged_off(logged_in)
@@ -33,7 +33,7 @@ while True:
         tmp_payload["filter[id]"] = user
         who_logged_off.extend(api.get("locations", tmp_payload))
     print(
-        f"People who logged off in the last {interval} seconds: {who_logged_off}")
+        f"Users who logged off in the last {interval} seconds: {who_logged_off}")
     print("")
 
     db_operations.insert_data(who_logged_off)
