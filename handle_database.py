@@ -10,6 +10,11 @@ class DatabaseOperations:
 	Handles all operations related to the mysql database.
 	Including connecting to the database,
 	inserting and reading data from the database.
+
+	Arguments:
+		db_name: (str) name of the database to create if not exist, or connect to if exists.
+		user: (str) mysql user
+		password: (str) mysql password
 	"""
 
 	def __init__(self, db_name, user, password):
@@ -25,10 +30,10 @@ class DatabaseOperations:
 		Connects to the database.
 
 		Arguments:
-						None.
+			None.
 
 		Returns:
-						connection: Connection object contains all that's needed to communicate with the database.
+			connection: Connection object contains all that's needed to communicate with the database.
 		"""
 		try:
 			connection = connect(
@@ -49,10 +54,10 @@ class DatabaseOperations:
 		Get the currently active users.
 
 		Arguments:
-						data: (List[Dict]) contains user data from the 42 API.
+			data: (List[Dict]) contains user data from the 42 API.
 
 		Returns:
-						logged_in: (List[Dict]) contains currently active session_id's.
+			logged_in: (List[Dict]) contains currently active session_id's.
 		"""
 		logged_in = []
 		for user in data:
@@ -64,10 +69,10 @@ class DatabaseOperations:
 		Get the users that just logged off.
 
 		Arguments:
-						logged_in: (List[Dict]) contains currently logged in users.
+			logged_in: (List[Dict]) contains currently logged in users.
 
 		Returns:
-						logged_off: (List[Dict]) contains logged off users.
+			logged_off: (List[Dict]) contains logged off users.
 		"""
 		logged_off: List[Dict] = []
 		for user in self.active:
@@ -93,15 +98,11 @@ class DatabaseOperations:
 		Inserts the people who logged off into the database.
 
 		Arguments:
-						who_logged_off: (List[Dict]) contains users who logged off.
+			who_logged_off: (List[Dict]) contains users who logged off.
 
 		Returns:
-						None.
+			None.
 		"""
-		# Create table if table doesn't exist yet
-		self.extract_hosts(who_logged_off)
-
-		# Insert user data
 		for user in who_logged_off:
 			host: str = user["host"][:-9]
 			# begin_at = datetime.strptime(user["begin_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -114,42 +115,4 @@ class DatabaseOperations:
 			# print(insert_login_session_query)
 			self.cursor.execute(insert_login_session_query, [
 				user["id"], user["user"]["login"], user["begin_at"], user["end_at"]])
-		self.connector.commit()
-
-	def extract_hosts(self, data: List[Dict]):
-		"""
-		Extract the hosts from the data (for example f0r1s6.codam.nl).
-		If there is no table for this specific host yet, create one.
-
-		Arguments:
-						data: (List[Dict]) contains user data.
-
-		Returns:
-						None.
-		"""
-		for user in data:
-			host: str = user["host"][:-9]
-			query: str = "show tables like \'" + str(host) + "\';"
-			self.cursor.execute(query)
-			result = self.cursor.fetchone()
-			if not result:
-				# print("{} doesn't exist as a table. Creating...".format(host))
-				self.create_host_table(host)
-
-	def create_host_table(self, host_name: str):
-		"""
-		Create a table with host_name.
-
-		Arguments:
-						host_name: (str) name of the host.
-		"""
-		create_host_table_query = '''
-		CREATE TABLE {}(
-			session_id INT,
-			login VARCHAR(100),
-			begin_at VARCHAR(100),
-			end_at VARCHAR(100)
-		)
-		'''.format(host_name)
-		self.cursor.execute(create_host_table_query)
 		self.connector.commit()
