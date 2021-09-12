@@ -39,6 +39,6 @@ echo "USE $DB_NAME;" >> $SQL_FILE
 while IFS="" read -r host || [ -n "$host" ]; do
 	if [[ "$host" =~ ^f ]]; then
 		host_name=${host%%.*}
-		echo "CREATE TABLE $host_name (session_id INT, login VARCHAR(100), begin_at DATETIME, end_at DATETIME);" >> $SQL_FILE
+		echo "CREATE TABLE IF NOT EXISTS $host_name (session_id INT, login VARCHAR(100), begin_at DATETIME, end_at DATETIME);" >> $SQL_FILE
 	fi
 done < $TABLES

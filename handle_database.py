@@ -105,14 +105,15 @@ class DatabaseOperations:
 		"""
 		for user in who_logged_off:
 			host: str = user["host"][:-9]
-			# begin_at = datetime.strptime(user["begin_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
-			# end_at = datetime.strptime(user["end_at"],  "%Y-%m-%dT%H:%M:%S.%fZ")
+			begin_at = datetime.strptime(user["begin_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
+			end_at = datetime.strptime(user["end_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
+			print(f"begin_at: {begin_at}")
+			print(f"end_at: {end_at}")
 			insert_login_session_query: str = """
 			INSERT INTO {}
 			(session_id, login, begin_at, end_at)
 			VALUES (%s, %s, %s, %s)
 			""".format(host)
-			# print(insert_login_session_query)
 			self.cursor.execute(insert_login_session_query, [
-				user["id"], user["user"]["login"], user["begin_at"], user["end_at"]])
+				user["id"], user["user"]["login"], begin_at, end_at])
 		self.connector.commit()
