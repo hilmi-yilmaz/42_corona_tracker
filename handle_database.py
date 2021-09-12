@@ -75,6 +75,7 @@ class DatabaseOperations:
 			logged_off: (List[Dict]) contains logged off users.
 		"""
 		logged_off: List[Dict] = []
+		# print(self.active)
 		for user in self.active:
 			if user not in logged_in:
 				logged_off.append(user)

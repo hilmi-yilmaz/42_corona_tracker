@@ -21,20 +21,30 @@ while True:
 
 	# Get active people data
 	logged_in: List[Dict] = db_operations.get_active_students(data)
-	print(f"Currently active students:\n{logged_in}")
+	print(f"Currently logged in:")
+	for user in logged_in:
+		print(user["user"]["login"])
+	print("")
 
 	# Get the recently logged off sessions
 	logged_off: List[Dict] = db_operations.get_recently_logged_off(logged_in)
+	print(f"Logged off students:")
+	for user in logged_off:
+		print(user["user"]["login"])
+	print("")
 
 	# Check whether someone logged off, if so, query and add to the database
 	who_logged_off: List[Dict] = []
 	for user in logged_off:
 		tmp_payload = payload
 		tmp_payload["filter[id]"] = user["id"]
+		tmp_payload["filter[active]"] = "false"
 		who_logged_off.extend(api.get("locations", tmp_payload))
 	print(
 		f"Users who logged off in the last {interval} seconds: {who_logged_off}")
 	print("")
+	print("who_logged_off: ")
+	print(who_logged_off)
 
 	# If someone logged off, insert data into database
 	db_operations.insert_data(who_logged_off)
@@ -43,4 +53,5 @@ while True:
 	db_operations.remove_old_data(1, "hour") # for now it will only print
 
 	db_operations.active = logged_in
+	print("------------------------------------------------")
 	time.sleep(interval)
