@@ -21,14 +21,14 @@ while True:
 
 	# Get active people data
 	logged_in: List[Dict] = db_operations.get_active_students(data)
-	print(f"Currently logged in:")
+	print(f"Currently logged in ({len(logged_in)}):")
 	for user in logged_in:
 		print(user["user"]["login"])
 	print("")
 
 	# Get the recently logged off sessions
 	logged_off: List[Dict] = db_operations.get_recently_logged_off(logged_in)
-	print(f"Logged off students:")
+	print(f"Logged off students ({len(logged_off)}):")
 	for user in logged_off:
 		print(user["user"]["login"])
 	print("")
