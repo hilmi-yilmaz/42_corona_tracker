@@ -36,9 +36,11 @@ while True:
 	# Check whether someone logged off, if so, query and add to the database
 	who_logged_off: List[Dict] = []
 	for user in logged_off:
-		tmp_payload = payload
-		tmp_payload["filter[id]"] = user["id"]
-		tmp_payload["filter[active]"] = "false"
+		tmp_payload = {"filter[campus_id]": 14,
+		   "filter[active]": "false", "page[size]": 100, "filter[id]": user["id"]}
+		#tmp_payload = payload
+		#tmp_payload["filter[id]"] = user["id"]
+		#tmp_payload["filter[active]"] = "false"
 		who_logged_off.extend(api.get("locations", tmp_payload))
 		time.sleep(1)
 	print(
