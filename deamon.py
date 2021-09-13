@@ -40,6 +40,7 @@ while True:
 		tmp_payload["filter[id]"] = user["id"]
 		tmp_payload["filter[active]"] = "false"
 		who_logged_off.extend(api.get("locations", tmp_payload))
+		time.sleep(1)
 	print(
 		f"Users who logged off in the last {interval} seconds: {who_logged_off}")
 	print("")
