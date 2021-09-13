@@ -49,21 +49,6 @@ class DatabaseOperations:
 		print(f"Succesfully connected to database {self.db_name}.")
 		return (connection)
 
-	def get_active_students(self, data: List[Dict]) -> List[Dict]:
-		"""
-		Get the currently active users.
-
-		Arguments:
-			data: (List[Dict]) contains user data from the 42 API.
-
-		Returns:
-			logged_in: (List[Dict]) contains currently active session_id's.
-		"""
-		logged_in = []
-		for user in data:
-			logged_in.append(user)
-		return (logged_in)
-
 	def get_recently_logged_off(self, logged_in: List[Dict]) -> List[Dict]:
 		"""
 		Get the users that just logged off.

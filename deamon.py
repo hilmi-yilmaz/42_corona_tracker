@@ -17,10 +17,10 @@ payload = {"filter[campus_id]": 14,
 
 # Continuously get data from the API and put into database
 while True:
-	data: List[Dict] = api.get("locations", payload)  # data is a list
+	logged_in: List[Dict] = api.get("locations", payload)  # data is a list
 
 	# Get active people data
-	logged_in: List[Dict] = db_operations.get_active_students(data)
+	#logged_in: List[Dict] = db_operations.get_active_students(data)
 	print(f"Currently logged in ({len(logged_in)}):")
 	for user in logged_in:
 		print(user["user"]["login"])
