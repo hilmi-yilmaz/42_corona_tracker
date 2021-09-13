@@ -123,7 +123,7 @@ class DatabaseOperations:
 
 		for table in all_tables:
 			query_delete_old_data = """
-			delete from {} where begin_at < date_sub(now(), interval {} {})
+			delete from {} where end_at < date_sub(now(), interval {} {})
 			""".format(table, x, "hour")
 			self.cursor.execute(query_delete_old_data)
 			self.connector.commit()

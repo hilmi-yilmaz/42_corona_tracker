@@ -23,7 +23,7 @@ while True:
 	#logged_in: List[Dict] = db_operations.get_active_students(data)
 	print(f"Currently logged in ({len(logged_in)}):")
 	for user in logged_in:
-		print(user["user"]["login"])
+		print("{} ({})".format(user["user"]["login"], user["host"]))
 	print("")
 
 	# Get the recently logged off sessions
@@ -36,12 +36,9 @@ while True:
 	# Check whether someone logged off, if so, query and add to the database
 	who_logged_off: List[Dict] = []
 	for user in logged_off:
-		tmp_payload = {"filter[campus_id]": 14,
+		logged_off_payload = {"filter[campus_id]": 14,
 		   "filter[active]": "false", "page[size]": 100, "filter[id]": user["id"]}
-		#tmp_payload = payload
-		#tmp_payload["filter[id]"] = user["id"]
-		#tmp_payload["filter[active]"] = "false"
-		who_logged_off.extend(api.get("locations", tmp_payload))
+		who_logged_off.extend(api.get("locations", logged_off_payload))
 		time.sleep(1)
 	print(
 		f"Users who logged off in the last {interval} seconds: {who_logged_off}")
