@@ -17,10 +17,9 @@ payload = {"filter[campus_id]": 14,
 
 # Continuously get data from the API and put into database
 while True:
-	logged_in: List[Dict] = api.get("locations", payload)  # data is a list
 
 	# Get active people data
-	#logged_in: List[Dict] = db_operations.get_active_students(data)
+	logged_in: List[Dict] = api.get("locations", payload)
 	print(f"Currently logged in ({len(logged_in)}):")
 	for user in logged_in:
 		print("{} ({})".format(user["user"]["login"], user["host"]))
@@ -50,7 +49,7 @@ while True:
 	db_operations.insert_data(who_logged_off)
 
 	# Remove old entries from the database
-	db_operations.remove_old_data(1, "hour") # for now it will only print
+	db_operations.remove_old_data(5, "days") # for now it will only print
 
 	db_operations.active = logged_in.copy()
 	print("------------------------------------------------")
