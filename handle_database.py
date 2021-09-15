@@ -79,6 +79,20 @@ class DatabaseOperations:
 		self.cursor.execute(query)
 		return (self.cursor.fetchall())
 
+	def parse_host_name(self, host: str) -> str:
+		"""
+		Parse the hostname from the host field of the API response.
+		For example: f0r1s1.codam.nl is what 42 API gives back.
+		Only take first part (f0r1s1) for hostname.
+
+		Arguments:
+			host: (str) the host field from the API.
+
+		Returns:
+			host_name: (str) parsed hostname.
+		"""
+		return (host[:-9])
+
 	def insert_data(self, who_logged_off: List[Dict]) -> None:
 		""" 
 		Inserts the people who logged off into the database.
@@ -90,11 +104,9 @@ class DatabaseOperations:
 			None.
 		"""
 		for user in who_logged_off:
-			host: str = user["host"][:-9]
+			host: str = self.parse_host_name(user["host"])
 			begin_at = datetime.strptime(user["begin_at"], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=2)
 			end_at = datetime.strptime(user["end_at"], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=2)
-			print(f"begin_at: {begin_at}")
-			print(f"end_at: {end_at}")
 			insert_login_session_query: str = """
 			INSERT INTO {}
 			(session_id, login, begin_at, end_at)
@@ -107,7 +119,7 @@ class DatabaseOperations:
 
 	def remove_old_data(self, x: int, time_frame: str):
 		"""
-		Removes data from the database that is 'days_old' days old.
+		Removes data from the database that is x timeframes old.
 
 		Arguments:
 			x: (int) amount of time in timeframe.
