@@ -1,6 +1,6 @@
 import argparse
 
-from handle_database import DatabaseOperations
+from handle_database import OperationsDatabase, UpdateDatabase
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(
@@ -16,7 +16,7 @@ print(f"{args.infected_person_login} tested positive on {args.day_positive}.")
 print(f"Gathering data from the following hosts: {args.hosts}")
 
 # Create an instance of DatabaseOperations to query some data from the database
-db_operations = DatabaseOperations("codam_corona_tracker", "hilmi", "hilmi")
+db_operations = OperationsDatabase("codam_corona_tracker", "data", "hilmi", "hilmi")
 
 # Create the query
 query_login = "select * from test_host where login = \'{}\'".format(

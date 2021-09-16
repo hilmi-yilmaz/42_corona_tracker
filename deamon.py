@@ -1,3 +1,4 @@
+from getpass import getpass
 import time
 from typing import List, Dict
 from get_user_data import API42
@@ -8,7 +9,7 @@ from handle_database import UpdateDatabase
 interval = 60
 
 # Instantiate a DatabaseOperations object to handle MySQL
-db_operations = UpdateDatabase("codam_corona_tracker", "data", "hilmi", "hilmi")
+db_operations = UpdateDatabase("codam_corona_tracker", "data", "hilmi", getpass("Enter database password: "))
 
 # Instantiate an API42 object for handling API requests
 api = API42()
