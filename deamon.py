@@ -33,23 +33,14 @@ while True:
 	print("")
 
 	# Check whether someone logged off, if so, query and add to the database
-	who_logged_off: List[Dict] = []
 	for user in logged_off:
 		logged_off_payload = {"filter[campus_id]": api.campus_id,
 		   "filter[active]": "false", "page[size]": 100, "filter[id]": user["id"]}
-		who_logged_off.extend(api.get("locations", logged_off_payload))
+		db_operations.insert_logged_off(api.get("locations", logged_off_payload)[0])
 		time.sleep(1)
-	print(
-		f"Users who logged off in the last {interval} seconds: {who_logged_off}")
-	print("")
-	print("who_logged_off: ")
-	print(who_logged_off)
-
-	# If someone logged off, insert data into database
-	db_operations.insert_data(who_logged_off)
 
 	# Remove old entries from the database
-	db_operations.remove_old_data(5, "days") # for now it will only print
+	db_operations.remove_old_data(1, "hour") # for now it will only print
 
 	db_operations.active = logged_in.copy()
 	print("------------------------------------------------")
