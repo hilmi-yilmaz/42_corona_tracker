@@ -21,6 +21,7 @@ class API42:
             config = yaml.load(stream, Loader=yaml.FullLoader)
             self.client_id = config["client_id"]
             self.client_secret = config["client_secret"]
+            self.campus_id = config["campus_id"]
             self.token_uri = config["token_uri"]
             self.endpoint = config["endpoint"]
 
@@ -78,9 +79,6 @@ class API42:
             except requests.exceptions.RequestException as err:
                 sys.exit(err)
 
-            # if response.status_code != 200:
-            # 	print(f"{endpoint} --> {response.status_code}: {response.reason}")
-            # 	exit(1)
             if len(response.json()) == 0:
                 break
             params["page[number]"] += 1
@@ -93,7 +91,7 @@ class API42:
 if __name__ == "__main__":
     api = API42()
     # , "filter[id]": 13024171}
-    payload = {"filter[campus_id]": 14,
+    payload = {"filter[campus_id]": api.campus_id,
                "filter[active]": "true", "page[size]": 50}
     data = api.get("locations", payload)
 

@@ -12,7 +12,7 @@ db_operations = DatabaseOperations("codam_corona_tracker", "hilmi", "hilmi")
 
 # Instantiate an API42 object for handling API requests
 api = API42()
-payload = {"filter[campus_id]": 14,
+payload = {"filter[campus_id]": api.campus_id,
 		   "filter[active]": "true", "page[size]": 100}
 
 # Continuously get data from the API and put into database
@@ -35,7 +35,7 @@ while True:
 	# Check whether someone logged off, if so, query and add to the database
 	who_logged_off: List[Dict] = []
 	for user in logged_off:
-		logged_off_payload = {"filter[campus_id]": 14,
+		logged_off_payload = {"filter[campus_id]": api.campus_id,
 		   "filter[active]": "false", "page[size]": 100, "filter[id]": user["id"]}
 		who_logged_off.extend(api.get("locations", logged_off_payload))
 		time.sleep(1)
