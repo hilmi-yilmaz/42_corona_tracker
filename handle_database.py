@@ -64,19 +64,19 @@ class OperationsDatabase:
         data = self.cursor.fetchall()
         return (data)
 
-    def insert(self, insert_query: str, insert_data: List[Tuple]) -> None:
+    def insert(self, insert_query: str, insert_data: List) -> None:
         """
         Insert data into database.
 
         Arguments:
                 insert_query: (str) the query to execute against the database.
-                insert_data: (List[Tuple]) the data to pass within the query.
+                insert_data: (List) the data to pass within the query.
 
         Returns:
                 None.
         """
 
-        self.cursor.executemany(insert_query, insert_data)
+        self.cursor.execute(insert_query, insert_data)
         self.connector.commit()
 
 
@@ -85,8 +85,8 @@ class UpdateDatabase(OperationsDatabase):
     Updates the database. Inserts and deletes data.
     """
 
-    def __init__(self, db_name, user, password):
-        super().__init__(db_name, user, password)
+    def __init__(self, db_name, table_name, user, password):
+        super().__init__(db_name, table_name, user, password)
         self.active = []
 
     def get_recently_logged_off(self, logged_in: List[Dict]) -> List[Dict]:
@@ -136,7 +136,7 @@ class UpdateDatabase(OperationsDatabase):
 
         Arguments:
             x: (int) amount of time in timeframe.
-            time_frame: (str) can any of week, day, hour.
+            time_frame: (str) can be any of week, day, hour.
 
         Returns:
             None.
@@ -151,15 +151,14 @@ class UpdateDatabase(OperationsDatabase):
 
 if __name__ == "__main__":
 
-    db = UpdateDatabase("codam_corona_tracker", "hilmi", "hilmi")
+    db = UpdateDatabase("codam_corona_tracker", "data", "hilmi", "hilmi")
 
     #db = OperationsDatabase("codam_corona_tracker", "hilmi", "hilmi")
-    query = "select * from f0r1s12"
+    query = "select * from data"
     data = db.read(query)
     print("data\n{}".format(data))
     print(type(data))
-    print(type(data[0]))
 
-    insert_query = "insert into f0r1s12 (session_id, login, begin_at, end_at) values (%s, %s, %s, %s)"
-    insert_data = [("23331", "yp33333rppr", "1", "2")]
+    insert_query = "insert into data (session_id, host, login, begin_at, end_at) values (%s, %s, %s, %s, %s)"
+    insert_data = ["23331", "f0r1s1", "yp33333rppr", datetime.now(), datetime.now() + timedelta(hours=1)]
     db.insert(insert_query, insert_data)

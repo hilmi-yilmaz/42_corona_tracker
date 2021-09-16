@@ -1,14 +1,14 @@
 import time
 from typing import List, Dict
 from get_user_data import API42
-from handle_database import DatabaseOperations
+from handle_database import UpdateDatabase
 
 # Set interval variable for while loop in seconds
 # If someone logs in and off in less time than the interval perdiod, that person will not be registered
 interval = 60
 
 # Instantiate a DatabaseOperations object to handle MySQL
-db_operations = DatabaseOperations("codam_corona_tracker", "hilmi", "hilmi")
+db_operations = UpdateDatabase("codam_corona_tracker", "data", "hilmi", "hilmi")
 
 # Instantiate an API42 object for handling API requests
 api = API42()
