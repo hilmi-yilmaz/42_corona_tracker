@@ -58,7 +58,7 @@ class API42:
         Returns:
                 data: list containing all responses in json format.
         """
-        
+
         endpoint = os.path.join(self.endpoint, name)
         params["access_token"] = self.token
         params["page[number]"] = 1
@@ -91,10 +91,11 @@ class API42:
 
 if __name__ == "__main__":
     api = API42()
-    # , "filter[id]": 13024171}
-    payload = {"filter[campus_id]": api.campus_id,
-               "filter[active]": "true", "page[size]": 50}
-    data = api.get("locations", payload)
+    # payload = {"filter[campus_id]": api.campus_id,
+    #            "filter[active]": "true", "page[size]": 50}
+    payload = {"filter[campus_id]": api.campus_id, "page[size]": 100}
+    data = api.get("evaluations", payload)
+
 
     i = 0
     for element in data:

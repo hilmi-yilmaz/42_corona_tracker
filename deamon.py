@@ -36,7 +36,10 @@ while True:
 	for user in logged_off:
 		logged_off_payload = {"filter[campus_id]": api.campus_id,
 		   "filter[active]": "false", "page[size]": 100, "filter[id]": user["id"]}
-		db_operations.insert_logged_off(api.get("locations", logged_off_payload)[0])
+		#print(api.get("locations", logged_off_payload))
+		rep = api.get("locations", logged_off_payload)[0]
+		print(rep)
+		db_operations.insert_logged_off(rep)
 		time.sleep(1)
 
 	# Remove old entries from the database

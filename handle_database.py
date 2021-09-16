@@ -35,7 +35,7 @@ class OperationsDatabase:
         Returns:
             connection: Connection object contains all that's needed to communicate with the database.
         """
-		
+
         try:
             connection = connect(
                 host="localhost",
@@ -128,7 +128,7 @@ class UpdateDatabase(OperationsDatabase):
 		VALUES (%s, %s, %s, %s, %s)
 		""".format(self.table_name)
         insert_login_session_data = [
-            (logged_off_session["id"], logged_off_session["host"], logged_off_session["user"]["login"], begin_at, end_at)]
+            logged_off_session["id"], logged_off_session["host"], logged_off_session["user"]["login"], begin_at, end_at]
         print(f"insert_login_session_query = {insert_login_session_query}")
         self.insert(insert_login_session_query, insert_login_session_data)
 
