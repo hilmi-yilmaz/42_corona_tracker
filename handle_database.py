@@ -35,6 +35,7 @@ class OperationsDatabase:
         Returns:
             connection: Connection object contains all that's needed to communicate with the database.
         """
+		
         try:
             connection = connect(
                 host="localhost",
@@ -99,6 +100,7 @@ class UpdateDatabase(OperationsDatabase):
         Returns:
             logged_off: (List[Dict]) contains logged off users.
         """
+
         logged_off: List[Dict] = []
         for user in self.active:
             if user not in logged_in:
@@ -124,7 +126,7 @@ class UpdateDatabase(OperationsDatabase):
 		INSERT INTO {}
 		(session_id, host, login, begin_at, end_at)
 		VALUES (%s, %s, %s, %s, %s)
-		"""
+		""".format(self.table_name)
         insert_login_session_data = [
             (logged_off_session["id"], logged_off_session["host"], logged_off_session["user"]["login"], begin_at, end_at)]
         print(f"insert_login_session_query = {insert_login_session_query}")

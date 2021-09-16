@@ -58,6 +58,7 @@ class API42:
         Returns:
                 data: list containing all responses in json format.
         """
+        
         endpoint = os.path.join(self.endpoint, name)
         params["access_token"] = self.token
         params["page[number]"] = 1
