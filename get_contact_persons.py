@@ -1,5 +1,6 @@
 import argparse
 import readline
+from datetime import datetime
 from typing import Dict, List
 
 from handle_database import OperationsDatabase
@@ -12,10 +13,12 @@ parser = argparse.ArgumentParser(
     description="List people that sat close to a recently infected person at Codam.")
 parser.add_argument("infected_person_login", type=str,
                     help="The intra login of the infected person.")
-parser.add_argument("day_positive", type=str,
+parser.add_argument("day_positive", type=lambda s: datetime.strptime(s, '%d-%m-%Y').date(),
                     help="The day the person tested positive. Format: day-month-year e.g. 09-12-2021.")
 args = parser.parse_args()
 print(f"{args.infected_person_login} tested positive on {args.day_positive}.")
+print(type(args.day_positive))
+print(args.day_positive)
 
 # Create the query
 query_login = "select * from {} where login = \'{}\'".format(db_operations.table_name,
@@ -32,7 +35,8 @@ for session in data: # loops over the sessions of the infected person
 		contacts.remove(session["login"])
 	for contact in contacts: # loops over all hosts close to this specific session of the infected person
 		contact_query = """
-		select * from {0} where (host = \'{1}\') and ((begin_at between \'{2}\' and \'{3}\') or (end_at between \'{2}\' and \'{3}\'))
-		""".format(db_operations.table_name, contact, session["begin_at"], session["end_at"])
+		select * from {0} where (host = \'{1}\') and (convert(date, begin_at) = \'{2}\') and ((begin_at between \'{3}\' and \'{4}\') or (end_at between \'{2}\' and \'{3}\'))
+		""".format(db_operations.table_name, contact, args.day_positive, session["begin_at"], session["end_at"])
+		print(contact_query)
 		data_on_contact_person = db_operations.read(contact_query) # could be more people sitting on same computer
 		print(data_on_contact_person)
