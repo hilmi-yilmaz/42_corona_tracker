@@ -23,7 +23,7 @@ class OperationsDatabase:
         self.user = user
         self.password = password
         self.connector = self.connect_to_database()
-        self.cursor = self.connector.cursor()
+        self.cursor = self.connector.cursor(dictionary=True)
 
     def connect_to_database(self):
         """
@@ -50,7 +50,7 @@ class OperationsDatabase:
         print(f"Succesfully connected to database {self.db_name}.")
         return (connection)
 
-    def read(self, query: str) -> List[Tuple]:
+    def read(self, query: str) -> List[Dict]:
         """
         Read data from database.
 

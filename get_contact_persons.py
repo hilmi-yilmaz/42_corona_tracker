@@ -1,5 +1,6 @@
 import argparse
 import readline
+from typing import Dict, List
 
 from handle_database import OperationsDatabase
 
@@ -22,18 +23,16 @@ query_login = "select * from {} where login = \'{}\'".format(db_operations.table
 print(query_login)
 
 # Store all the data of the infected person
-data = db_operations.read(query_login)
+data: List[Dict] = db_operations.read(query_login)
 
 # Find for each login session of the infected person, which hosts where nearby
 for session in data: # loops over the sessions of the infected person
-	begin_at = session[3]
-	end_at = session[4]
 	contacts = input("Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
-	if (session[1] in contacts):
-		contacts.remove(session[1])
+	if (session["login"] in contacts):
+		contacts.remove(session["login"])
 	for contact in contacts: # loops over all hosts close to this specific session of the infected person
 		contact_query = """
 		select * from {0} where (host = \'{1}\') and ((begin_at between \'{2}\' and \'{3}\') or (end_at between \'{2}\' and \'{3}\'))
-		""".format(db_operations.table_name, contact, begin_at, end_at)
-		data_on_contact_person = db_operations.read(contact_query)
+		""".format(db_operations.table_name, contact, session["begin_at"], session["end_at"])
+		data_on_contact_person = db_operations.read(contact_query) # could be more people sitting on same computer
 		print(data_on_contact_person)
