@@ -58,7 +58,7 @@ class OperationsDatabase:
             query: (str) the query to execute against the database.
 
         Returns:
-            data: (List[Tuple]) data returned by the database.
+            data: (List[Dict]) data returned by the database.
         """
 
         self.cursor.execute(query)

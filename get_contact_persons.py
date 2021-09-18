@@ -26,17 +26,19 @@ query_login = "select * from {} where login = \'{}\'".format(db_operations.table
 print(query_login)
 
 # Store all the data of the infected person
-data: List[Dict] = db_operations.read(query_login)
+infected_person_data: List[Dict] = db_operations.read(query_login)
 
 # Find for each login session of the infected person, which hosts where nearby
-for session in data: # loops over the sessions of the infected person
-	contacts = input("Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
-	if (session["login"] in contacts):
-		contacts.remove(session["login"])
-	for contact in contacts: # loops over all hosts close to this specific session of the infected person
+for infected_person_session in infected_person_data: # loops over the sessions of the infected person
+	contact_data = input("Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
+	if (infected_person_session["login"] in contact_data):
+		contact_data.remove(infected_person_session["login"])
+	for contact in contact_data: # loops over all hosts close to this specific session of the infected person
 		contact_query = """
-		select * from {0} where (host = \'{1}\') and (convert(date, begin_at) = \'{2}\') and ((begin_at between \'{3}\' and \'{4}\') or (end_at between \'{2}\' and \'{3}\'))
-		""".format(db_operations.table_name, contact, args.day_positive, session["begin_at"], session["end_at"])
-		print(contact_query)
-		data_on_contact_person = db_operations.read(contact_query) # could be more people sitting on same computer
-		print(data_on_contact_person)
+		select * from {0} where (host = \'{1}\') and (date(begin_at) = \'{2}\')
+		""".format(db_operations.table_name, contact, args.day_positive)
+		data_on_contact_persons = db_operations.read(contact_query)
+		for loggins in data_on_contact_persons:
+			overlap = min(infected_person_session["end_at"], loggins["end_at"]) - max(infected_person_session["begin_at"], loggins["begin_at"])
+			if overlap.days >= 0:
+				print("{} was logged in {} (hours:minutes:seconds) sitting on computer {} on {}.".format(loggins["login"], overlap, loggins["host"], loggins["begin_at"].date()))
