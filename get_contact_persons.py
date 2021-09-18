@@ -16,9 +16,6 @@ parser.add_argument("infected_person_login", type=str,
 parser.add_argument("day_positive", type=lambda s: datetime.strptime(s, '%d-%m-%Y').date(),
                     help="The day the person tested positive. Format: day-month-year e.g. 09-12-2021.")
 args = parser.parse_args()
-print(f"{args.infected_person_login} tested positive on {args.day_positive}.")
-print(type(args.day_positive))
-print(args.day_positive)
 
 # Create the query
 query_login = "select * from {} where login = \'{}\'".format(db_operations.table_name,
@@ -28,11 +25,16 @@ print(query_login)
 # Store all the data of the infected person
 infected_person_data: List[Dict] = db_operations.read(query_login)
 
+# Print information
+print(f"Information of contact persons of {args.infected_person_login} who got infected on {args.day_positive}.")
+
 # Find for each login session of the infected person, which hosts where nearby
 for infected_person_session in infected_person_data: # loops over the sessions of the infected person
 	contact_data = input("Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
-	if (infected_person_session["login"] in contact_data):
-		contact_data.remove(infected_person_session["login"])
+	# print(contact_data)
+	# print(infected_person_session["login"])
+	if (infected_person_session["host"] in contact_data):
+		contact_data.remove(infected_person_session["host"])
 	for contact in contact_data: # loops over all hosts close to this specific session of the infected person
 		contact_query = """
 		select * from {0} where (host = \'{1}\') and (date(begin_at) = \'{2}\')
