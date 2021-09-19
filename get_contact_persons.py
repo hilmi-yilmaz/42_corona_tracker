@@ -4,10 +4,7 @@ import time
 from datetime import datetime, timedelta
 from typing import Dict, List
 
-from get_user_data import API42
-
-# Create an instance of DatabaseOperations to query some data from the database
-api = API42()
+from get_contacts import GetContacts
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(
@@ -16,10 +13,15 @@ parser.add_argument("infected_person_login", type=str,
                     help="The intra login of the infected person.")
 parser.add_argument("day_positive", type=lambda s: datetime.strptime(s, '%d-%m-%Y').date(),
                     help="The day the person tested positive. Format: day-month-year e.g. 09-12-2021.")
+parser.add_argument("days", type=int,
+                    help="For how many previous days to check.")
 args = parser.parse_args()
 
-# Get user's user_id
+# 
+contact = GetContacts(args.infected_person_login, args.day_positive, args.days)
+print(contact.get_contacts())
 
+exit(0)
 
 # Create the payload to send with the request to get all data one day before infection
 begin_at_range = "{},{}".format((args.day_positive - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ"), args.day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
