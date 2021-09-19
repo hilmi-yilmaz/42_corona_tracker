@@ -41,7 +41,7 @@ while True:
 		time.sleep(1)
 
 	# Remove old entries from the database
-	#db_operations.remove_old_data(1, "hour") # for now it will only print
+	db_operations.remove_old_data(3, "day") # for now it will only print
 
 	db_operations.active = logged_in.copy()
 	print("------------------------------------------------")
