@@ -1,13 +1,13 @@
 import argparse
 import readline
-from datetime import datetime
+import time
+from datetime import datetime, timedelta
 from typing import Dict, List
 
-from handle_database import OperationsDatabase
+from get_user_data import API42
 
 # Create an instance of DatabaseOperations to query some data from the database
-db_operations = OperationsDatabase(
-    "codam_corona_tracker", "data", "hilmi", "hilmi")
+api = API42()
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(
@@ -17,6 +17,43 @@ parser.add_argument("infected_person_login", type=str,
 parser.add_argument("day_positive", type=lambda s: datetime.strptime(s, '%d-%m-%Y').date(),
                     help="The day the person tested positive. Format: day-month-year e.g. 09-12-2021.")
 args = parser.parse_args()
+
+# Get user's user_id
+
+
+# Create the payload to send with the request to get all data one day before infection
+begin_at_range = "{},{}".format((args.day_positive - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ"), args.day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
+print(begin_at_range)
+payload = {"filter[campus_id]": api.campus_id, "range[begin_at]": begin_at_range, "page[size]": 100}
+
+
+# Get data from api
+data = api.get("locations", payload)
+# i = 0
+# for element in data:
+# 	print(element)
+# 	print("")
+# 	i += 1
+# print(i)
+
+# Get the sessions of the infected_person
+infected_person_all_sessions = [session for session in data if args.infected_person_login == session["user"]["login"]]
+print(infected_person_all_sessions)
+
+for infected_person_session in infected_person_all_sessions:
+	contact_hosts: List[str] = input(
+		"Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
+	if infected_person_session["host"] in contact_hosts:
+		contact_hosts.remove(infected_person_session["host"])
+	for host in contact_hosts:
+		contact_payload = payload.copy()
+		contact_payload["filter[host]"] = host
+		contact_data = api.get("locations", contact_payload)
+		print(contact_data)
+		print(len(contact_data))
+		time.sleep(1)
+
+exit(0)
 
 # Create the query
 query_login = "select * from {} where login = \'{}\'".format(db_operations.table_name,
