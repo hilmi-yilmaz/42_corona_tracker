@@ -87,19 +87,3 @@ class API42:
             time.sleep(1)
 
         return (data)
-
-
-if __name__ == "__main__":
-    api = API42()
-    # payload = {"filter[campus_id]": api.campus_id,
-    #            "filter[active]": "true", "page[size]": 50}
-    payload = {"filter[campus_id]": api.campus_id, "page[size]": 100, "range[begin_at]": "2021-09-17T00:00:00Z,2021-09-18T00:00:00Z"}
-    data = api.get("locations", payload)
-
-
-    i = 0
-    for element in data:
-        print(element)
-        print("")
-        i += 1
-    print(i)
