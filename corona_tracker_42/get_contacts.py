@@ -2,6 +2,7 @@ import readline
 import time
 from datetime import date, datetime, timedelta
 from typing import Dict, List
+from .utils import *
 #from api42_wrapper import API42
 
 class Student:
@@ -29,8 +30,8 @@ class Student:
 			if session["user"]["login"] == self.login:
 				self.session_id.append(session["id"])
 				self.host.append(session["host"])
-				self.begin_at.append(session["begin_at"])
-				self.end_at.append(session["end_at"])
+				self.begin_at.append(str_to_datetime(session["begin_at"]))
+				self.end_at.append(str_to_datetime(session["end_at"]))
 
 
 
