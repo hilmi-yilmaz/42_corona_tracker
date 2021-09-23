@@ -84,6 +84,6 @@ class API42:
                 break
             params["page[number]"] += 1
             data.extend(response.json())
-            time.sleep(1)
+            time.sleep(0.5)
 
         return (data)
