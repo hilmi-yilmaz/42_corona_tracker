@@ -14,24 +14,17 @@ def get_contacts(api, infected_sessions, date_range):
 	"""
 
 	i = 0
-	save_session_hosts = []
-	save_contact_hosts = []
+
 	for session in infected_sessions:
 		
 		print("Session {} on host {} from {} until {}".format(
 			i, session["host"], session["begin_at"], session["end_at"]))
-
-		if session["host"] in save_session_hosts:
-			contact_hosts = save_contact_hosts[-1]
 
 		contact_hosts: List[str] = input(
 			"Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
 		if session["host"] in contact_hosts:
 			contact_hosts.remove(session["host"])
 		
-		if session["host"] not in save_session_hosts:
-			save_contact_hosts.append(session["host"])
-
 		for host in contact_hosts:
 			contact_payload = {"filter[campus_id]": api.campus_id,
 								"range[begin_at]": date_range, "page[size]": 100}
@@ -45,17 +38,6 @@ def get_contacts(api, infected_sessions, date_range):
 					print("{} was logged in {} (hours:minutes:seconds) sitting on computer {}.".format(
 						loggins["user"]["login"], overlap, loggins["host"]))
 		i += 1
-
-# def connect_sessions(infected_sessions: List[Dict]):
-# 	"""
-# 	If a person has a few login sessions on the same host in one day,
-# 	he probably sat the whole day there.
-# 	"""
-# 	hosts = []
-# 	for session in infected_sessions:
-# 		if session["host"] not in hosts:
-# 			hosts.append(session)
-# 	for 
 
 def get_date_range(day_positive, days_to_check):
 	"""

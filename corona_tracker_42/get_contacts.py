@@ -30,8 +30,8 @@ class Student:
 			if session["user"]["login"] == self.login:
 				self.session_id.append(session["id"])
 				self.host.append(session["host"])
-				self.begin_at.append(str_to_datetime(session["begin_at"]))
-				self.end_at.append(str_to_datetime(session["end_at"]))
+				self.begin_at.append(str_to_datetime(session["begin_at"]) + timedelta(hours=2))
+				self.end_at.append(str_to_datetime(session["end_at"]) + timedelta(hours=2))
 
 
 

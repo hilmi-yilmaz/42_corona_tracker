@@ -17,15 +17,11 @@ parser.add_argument("days_to_check", type=int,
                     help="For how many previous days to check.")
 args = parser.parse_args()
 
-# contact = GetContacts(args.infected_person_login, args.day_positive, args.days)
-# contact.get_contacts()
-
 # Create an API42 object to make calls with
 api = API42()
 
 # Get data from the API from the past few days
 date_range: str = "{},{}".format((args.day_positive - timedelta(days=args.days_to_check)).strftime("%Y-%m-%dT%H:%M:%SZ"), args.day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
-print(date_range)
 payload = {"filter[campus_id]": api.campus_id, "range[begin_at]": date_range, "page[size]": 100}
 data: List[Dict] = api.get("locations", payload)
 
@@ -44,11 +40,41 @@ print(infected_student.day_positive)
 print(infected_student.days_to_check)
 
 
-# Get the student who sat close to the infected person
-#date_range_contacts = "{},{}".format((student.day_positive - timedelta(days=student.days_to_check + 1)).strftime("%Y-%m-%dT%H:%M:%SZ"), student.day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
-#get_contacts(api, infected_sessions, date_range_contacts)
+# Get people who sat close to infected person
+
+def get_contacts_1(student):
+
+	i = 0
+	map_host_to_contacts: Dict[str, List] = {}
+	for i in range(len(student.session_id)):
+		
+		print("Session {} on host {} from {} until {}".format(
+		i, student.host[i], student.begin_at[i], student.end_at[i]))
+
+		if student.host[i] in map_host_to_contacts:
+			contact_hosts = map_host_to_contacts[student.host[i]]
+		else:
+			contact_hosts: List[str] = input(
+				"Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
+			# Remove duplicate elements
+			contact_hosts = list(dict.fromkeys(contact_hosts))
+			# Remove host itself if given as input
+			if student.host[i] in contact_hosts:
+				contact_hosts.remove(student.host[i])
+			# Add to dict
+			map_host_to_contacts[student.host[i]] = contact_hosts
 
 
+		# Remove duplicate elements
+		contact_hosts = list(dict.fromkeys(contact_hosts))
 
+		# Add to dict
+		map_host_to_contacts[student.host[i]] = contact_hosts
 
+		print(map_host_to_contacts)
 
+		print(contact_hosts)
+
+		i += 1
+
+get_contacts_1(infected_student)
