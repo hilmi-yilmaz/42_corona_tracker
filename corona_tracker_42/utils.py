@@ -39,6 +39,49 @@ def get_contacts(api, infected_sessions, date_range):
 						loggins["user"]["login"], overlap, loggins["host"]))
 		i += 1
 
+def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
+	"""
+	Returns a mapping of infected hosts to contact hosts like:
+	{"f1r1s1.codam.nl": [f1r1s2.codam.nl, f1r1s3.codam.nl], ...}
+
+	Returns:
+		contacts: (List[str]) list containing logins names of contact persons.
+	"""
+
+	print("Which computers do you want to check?\nEnter the hostnames separated by spaces.")
+	print("-------------------------------------------------------------------------------")
+	i = 0
+	map_host_to_contacts: Dict[str, List[str]] = {}
+	for i in range(len(infected_student.session_id)):
+
+		if infected_student.host[i] in map_host_to_contacts:
+			contact_hosts = map_host_to_contacts[infected_student.host[i]]
+		else:
+			contact_hosts: List[str] = input("Host {}: ".format(infected_student.host[i])).split(" ")
+			# Remove duplicate elements
+			contact_hosts = list(dict.fromkeys(contact_hosts))
+			# Remove host itself if given as input
+			if infected_student.host[i] in contact_hosts:
+				contact_hosts.remove(infected_student.host[i])
+			# Add to dict
+			map_host_to_contacts[infected_student.host[i]] = contact_hosts
+
+		# Remove duplicate elements
+		contact_hosts = list(dict.fromkeys(contact_hosts))
+
+		i += 1
+
+	return (map_host_to_contacts)
+
+def is_in_students_list(contact_students: List, login: str):
+	"""
+	checks whether the login is already in the contacts students list.
+	"""
+	for i, student in enumerate(contact_students):
+		if student.login == login:
+			return (i)
+	return (-1)
+
 def get_date_range(day_positive, days_to_check):
 	"""
 	Gives a range for the inputted date.

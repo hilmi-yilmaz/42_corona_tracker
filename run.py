@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict
 
 from corona_tracker_42.api42_wrapper import API42
-from corona_tracker_42.get_contacts import InfectedStudent
+from corona_tracker_42.get_contacts import InfectedStudent, Student
 from corona_tracker_42.utils import *
 
 # Parse the command line arguments
@@ -20,7 +20,7 @@ args = parser.parse_args()
 # Create an API42 object to make calls with
 api = API42()
 
-# Get data from the API from the past few days
+# Get data from the API from the past few days (add one so we can check contact that may have overlap but begin_at is the day before)
 date_range: str = "{},{}".format((args.day_positive - timedelta(days=args.days_to_check)).strftime("%Y-%m-%dT%H:%M:%SZ"), args.day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
 payload = {"filter[campus_id]": api.campus_id, "range[begin_at]": date_range, "page[size]": 100}
 data: List[Dict] = api.get("locations", payload)
@@ -28,53 +28,41 @@ data: List[Dict] = api.get("locations", payload)
 # Create an object containing information on the student
 infected_student = InfectedStudent(args.infected_person_login, args.day_positive, args.days_to_check)
 
-# Get sessions of the infected person
-infected_student.get_sessions(data)
-
-print(infected_student.login)
-print(infected_student.session_id)
-print(infected_student.host)
-print(infected_student.begin_at)
-print(infected_student.end_at)
-print(infected_student.day_positive)
-print(infected_student.days_to_check)
+# Get sessions on infected person
+for session in data:
+	if session["user"]["login"] == infected_student.login:
+		infected_student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
 
 
-# Get people who sat close to infected person
+# Get contacts from the user
+contacts: Dict[str, List[str]] = get_contact_hosts(infected_student)
+print(contacts)
 
-def get_contacts_1(student):
-
-	i = 0
-	map_host_to_contacts: Dict[str, List] = {}
-	for i in range(len(student.session_id)):
-		
-		print("Session {} on host {} from {} until {}".format(
-		i, student.host[i], student.begin_at[i], student.end_at[i]))
-
-		if student.host[i] in map_host_to_contacts:
-			contact_hosts = map_host_to_contacts[student.host[i]]
-		else:
-			contact_hosts: List[str] = input(
-				"Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
-			# Remove duplicate elements
-			contact_hosts = list(dict.fromkeys(contact_hosts))
-			# Remove host itself if given as input
-			if student.host[i] in contact_hosts:
-				contact_hosts.remove(student.host[i])
-			# Add to dict
-			map_host_to_contacts[student.host[i]] = contact_hosts
+# Get contacts persons
+contact_students: List = []
+for infected_host, contact in contacts.items():
+	for session in data:
+		if session["host"] in contact:
+			i = is_in_students_list(contact_students, session["user"]["login"])
+			if i == -1:
+				student = Student(session["user"]["login"])
+				student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
+				contact_students.append(student)
+			else:
+				contact_students[i].append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
+			
 
 
-		# Remove duplicate elements
-		contact_hosts = list(dict.fromkeys(contact_hosts))
 
-		# Add to dict
-		map_host_to_contacts[student.host[i]] = contact_hosts
+print(contact_students)
 
-		print(map_host_to_contacts)
 
-		print(contact_hosts)
+# # Get sessions of the infected person
+# infected_student.get_sessions(data)
 
-		i += 1
-
-get_contacts_1(infected_student)
+for student in contact_students:
+	print(student.login)
+	print(student.session_id)
+	print(student.host)
+	print(student.begin_at)
+	print(student.end_at)
