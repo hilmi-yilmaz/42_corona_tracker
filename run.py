@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict
 
 from corona_tracker_42.api42_wrapper import API42
-from corona_tracker_42.get_contacts import InfectedStudent, Student
+from corona_tracker_42.students import InfectedStudent, Student
 from corona_tracker_42.utils import *
 
 # Parse the command line arguments
@@ -36,7 +36,6 @@ for session in data:
 
 # Get contacts from the user
 contacts: Dict[str, List[str]] = get_contact_hosts(infected_student)
-print(contacts)
 
 # Get contacts persons
 contact_students: List = []
@@ -50,19 +49,3 @@ for infected_host, contact in contacts.items():
 				contact_students.append(student)
 			else:
 				contact_students[i].append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
-			
-
-
-
-print(contact_students)
-
-
-# # Get sessions of the infected person
-# infected_student.get_sessions(data)
-
-for student in contact_students:
-	print(student.login)
-	print(student.session_id)
-	print(student.host)
-	print(student.begin_at)
-	print(student.end_at)

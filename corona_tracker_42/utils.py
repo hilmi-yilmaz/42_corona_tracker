@@ -130,9 +130,9 @@ def get_overlap_time(begin_at_infected, end_at_infected, begin_at_contact, end_a
 		(datetime) the overlap time.
 	"""
 
-	begin_at_infected = str_to_datetime(begin_at_infected)
-	begin_at_contact = str_to_datetime(begin_at_contact)
-	end_at_infected = str_to_datetime(end_at_infected)
-	end_at_contact = str_to_datetime(end_at_contact)
+	begin_at_infected = begin_at_infected
+	begin_at_contact = begin_at_contact
+	end_at_infected = end_at_infected
+	end_at_contact = end_at_contact
 	return (min(end_at_infected, end_at_contact) - max(begin_at_infected, begin_at_contact))
 
