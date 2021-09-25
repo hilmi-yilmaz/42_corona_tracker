@@ -50,30 +50,30 @@ for infected_host, contact in contacts.items():
 			else:
 				contact_students[i].append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
 
-print(contact_students[0].login, contact_students[1].login)
-
 # Get the overlap times between the infected person and the contact persons
-# I have an infected student and a list of normal student who may be in contact
 
-total_overlap = []
+total_overlap = {}
 for j in range(len(infected_student.session_id)):
 	for contact in contact_students:
 		total_overlap_seconds = 0
 		for i in range(len(contact.session_id)):
 			overlap = get_overlap_time(contact.begin_at[i], contact.end_at[i], infected_student.begin_at[j], infected_student.end_at[j])
 			if overlap.days >= 0:
-				print("overlap between {} and {} is {}".format(contact.login, infected_student.login ,overlap.seconds))
 				total_overlap_seconds += overlap.seconds
-		total_overlap.append((contact.login, total_overlap_seconds))
+		if contact.login in total_overlap:
+			total_overlap[contact.login] += total_overlap_seconds
+		else:
+			total_overlap[contact.login] = total_overlap_seconds
 
-print(total_overlap)
+for login, overlap in total_overlap.items():
+	print("{} logged in for {} next to {}".format(login, str(timedelta(seconds=overlap)), infected_student.login))
 
-def print_student(student):
+# def print_student(student):
 
-	print("---------------------------")
-	print(student.login)
-	for i in range(len(student.session_id)):
-		print("{} till {}".format(student.begin_at[i], student.end_at[i]))
+# 	print("---------------------------")
+# 	print(student.login)
+# 	for i in range(len(student.session_id)):
+# 		print("{} till {}".format(student.begin_at[i], student.end_at[i]))
 
-print_student(infected_student)
-print_student(contact_students[0])
+# print_student(infected_student)
+# print_student(contact_students[0])
