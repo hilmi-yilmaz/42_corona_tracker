@@ -136,3 +136,8 @@ def get_overlap_time(begin_at_infected, end_at_infected, begin_at_contact, end_a
 	end_at_contact = end_at_contact
 	return (min(end_at_infected, end_at_contact) - max(begin_at_infected, begin_at_contact))
 
+def get_days_hours_minutes_seconds(td):
+	"""
+	takes as input a timedelta object and returns days, hours, minutes and seconds
+	"""
+	pass
