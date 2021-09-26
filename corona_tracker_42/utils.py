@@ -53,10 +53,7 @@ def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
 	i = 0
 	map_host_to_contacts: Dict[str, List[str]] = {}
 	for i in range(len(infected_student.session_id)):
-
-		if infected_student.host[i] in map_host_to_contacts:
-			contact_hosts: List[str] = map_host_to_contacts[infected_student.host[i]]
-		else:
+		if infected_student.host[i] not in map_host_to_contacts:
 			contact_hosts = input("Host {}: ".format(infected_student.host[i])).split(" ")
 			# Remove duplicate elements
 			contact_hosts = list(dict.fromkeys(contact_hosts))
@@ -65,12 +62,7 @@ def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
 				contact_hosts.remove(infected_student.host[i])
 			# Add to dict
 			map_host_to_contacts[infected_student.host[i]] = contact_hosts
-
-		# Remove duplicate elements
-		contact_hosts = list(dict.fromkeys(contact_hosts))
-
 		i += 1
-
 	return (map_host_to_contacts)
 
 def is_in_students_list(contact_students: List, login: str):

@@ -36,6 +36,7 @@ for session in data:
 
 # Get contacts from the user
 contacts: Dict[str, List[str]] = get_contact_hosts(infected_student)
+print(contacts)
 
 # Get contacts persons
 contact_students: List[Student] = []
