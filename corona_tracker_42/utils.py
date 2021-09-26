@@ -55,9 +55,9 @@ def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
 	for i in range(len(infected_student.session_id)):
 
 		if infected_student.host[i] in map_host_to_contacts:
-			contact_hosts = map_host_to_contacts[infected_student.host[i]]
+			contact_hosts: List[str] = map_host_to_contacts[infected_student.host[i]]
 		else:
-			contact_hosts: List[str] = input("Host {}: ".format(infected_student.host[i])).split(" ")
+			contact_hosts = input("Host {}: ".format(infected_student.host[i])).split(" ")
 			# Remove duplicate elements
 			contact_hosts = list(dict.fromkeys(contact_hosts))
 			# Remove host itself if given as input
@@ -135,9 +135,3 @@ def get_overlap_time(begin_at_infected, end_at_infected, begin_at_contact, end_a
 	end_at_infected = end_at_infected
 	end_at_contact = end_at_contact
 	return (min(end_at_infected, end_at_contact) - max(begin_at_infected, begin_at_contact))
-
-def get_days_hours_minutes_seconds(td):
-	"""
-	takes as input a timedelta object and returns days, hours, minutes and seconds
-	"""
-	pass

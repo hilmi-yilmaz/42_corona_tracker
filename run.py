@@ -38,7 +38,7 @@ for session in data:
 contacts: Dict[str, List[str]] = get_contact_hosts(infected_student)
 
 # Get contacts persons
-contact_students: List = []
+contact_students: List[Student] = []
 for infected_host, contact in contacts.items():
 	for session in data:
 		if session["host"] in contact:
@@ -52,18 +52,18 @@ for infected_host, contact in contacts.items():
 
 # Get the overlap times between the infected person and the contact persons
 
-total_overlap = {}
+total_overlap: Dict[str, int] = {}
 for j in range(len(infected_student.session_id)):
-	for contact in contact_students:
-		total_overlap_seconds = 0
-		for i in range(len(contact.session_id)):
-			overlap = get_overlap_time(contact.begin_at[i], contact.end_at[i], infected_student.begin_at[j], infected_student.end_at[j])
+	for contact_student in contact_students:
+		total_overlap_seconds: int = 0
+		for i in range(len(contact_student.session_id)):
+			overlap = get_overlap_time(contact_student.begin_at[i], contact_student.end_at[i], infected_student.begin_at[j], infected_student.end_at[j])
 			if overlap.days >= 0:
 				total_overlap_seconds += overlap.seconds
-		if contact.login in total_overlap:
-			total_overlap[contact.login] += total_overlap_seconds
+		if contact_student.login in total_overlap:
+			total_overlap[contact_student.login] += total_overlap_seconds
 		else:
-			total_overlap[contact.login] = total_overlap_seconds
+			total_overlap[contact_student.login] = total_overlap_seconds
 
 for login, overlap in total_overlap.items():
 	print("{} logged in for {} next to {}".format(login, str(timedelta(seconds=overlap)), infected_student.login))
