@@ -1,43 +1,14 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import List, Dict
-import time
 
-def get_contacts(api, infected_sessions, date_range):
+def get_data(api, day_positive: date, days_to_check: int) -> List[Dict]:
 	"""
-	Outputs the users which sat close to the infected person.
-
-	Arguments:
-		None.
-
-	Returns:
-		None.
+	Get data from the past few days.
 	"""
-
-	i = 0
-
-	for session in infected_sessions:
-		
-		print("Session {} on host {} from {} until {}".format(
-			i, session["host"], session["begin_at"], session["end_at"]))
-
-		contact_hosts: List[str] = input(
-			"Which computers do you want to check?\nEnter the hostnames separated by spaces: ").split(" ")
-		if session["host"] in contact_hosts:
-			contact_hosts.remove(session["host"])
-		
-		for host in contact_hosts:
-			contact_payload = {"filter[campus_id]": api.campus_id,
-								"range[begin_at]": date_range, "page[size]": 100}
-			contact_payload["filter[host]"] = host
-			contact_data = api.get("locations", contact_payload)
-			time.sleep(0.5)
-			for loggins in contact_data:
-				overlap = get_overlap_time(
-					session["begin_at"], session["end_at"], loggins["begin_at"], loggins["end_at"])
-				if overlap.days >= 0:
-					print("{} was logged in {} (hours:minutes:seconds) sitting on computer {}.".format(
-						loggins["user"]["login"], overlap, loggins["host"]))
-		i += 1
+	date_range: str = "{},{}".format((day_positive - timedelta(days=days_to_check)).strftime("%Y-%m-%dT%H:%M:%SZ"), day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
+	payload = {"filter[campus_id]": api.campus_id, "range[begin_at]": date_range, "page[size]": 100}
+	data: List[Dict] = api.get("locations", payload)
+	return (data)
 
 def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
 	"""

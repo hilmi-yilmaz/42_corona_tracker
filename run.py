@@ -21,9 +21,7 @@ args = parser.parse_args()
 api = API42()
 
 # Get data from the API from the past few days (add one so we can check contact that may have overlap but begin_at is the day before)
-date_range: str = "{},{}".format((args.day_positive - timedelta(days=args.days_to_check)).strftime("%Y-%m-%dT%H:%M:%SZ"), args.day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
-payload = {"filter[campus_id]": api.campus_id, "range[begin_at]": date_range, "page[size]": 100}
-data: List[Dict] = api.get("locations", payload)
+data = get_data(api, args.day_positive, args.days_to_check)
 
 # Create an object containing information on the student
 infected_student = InfectedStudent(args.infected_person_login, args.day_positive, args.days_to_check)
@@ -33,26 +31,31 @@ for session in data:
 	if session["user"]["login"] == infected_student.login:
 		infected_student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
 
+# Get contact hosts from the user
+contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student)
 
-# Get contacts from the user
-contacts: Dict[str, List[str]] = get_contact_hosts(infected_student)
-print(contacts)
+# Get contacts
+def get_contacts(data, contact_hosts):
+	"""
+	Gets the contact hosts.
+	"""
+	contact_students: List[Student] = []
+	for infected_host, contact_host in contact_hosts.items():
+		for session in data:
+			if session["host"] in contact_host:
+				i = is_in_students_list(contact_students, session["user"]["login"])
+				if i == -1:
+					student = Student(session["user"]["login"])
+					student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
+					contact_students.append(student)
+				else:
+					contact_students[i].append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
 
-# Get contacts persons
-contact_students: List[Student] = []
-for infected_host, contact in contacts.items():
-	for session in data:
-		if session["host"] in contact:
-			i = is_in_students_list(contact_students, session["user"]["login"])
-			if i == -1:
-				student = Student(session["user"]["login"])
-				student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
-				contact_students.append(student)
-			else:
-				contact_students[i].append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
+	return (contact_students)
+
+contact_students = get_contacts(data, contact_hosts)
 
 # Get the overlap times between the infected person and the contact persons
-
 total_overlap: Dict[str, int] = {}
 for j in range(len(infected_student.session_id)):
 	for contact_student in contact_students:
