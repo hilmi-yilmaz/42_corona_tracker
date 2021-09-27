@@ -8,6 +8,8 @@ def get_data(api, day_positive: date, days_to_check: int) -> List[Dict]:
 	date_range: str = "{},{}".format((day_positive - timedelta(days=days_to_check)).strftime("%Y-%m-%dT%H:%M:%SZ"), day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
 	payload = {"filter[campus_id]": api.campus_id, "range[begin_at]": date_range, "page[size]": 100}
 	data: List[Dict] = api.get("locations", payload)
+	if not data:
+		print("No data available. No one was logged in between {}".format(date_range))
 	return (data)
 
 def get_contact_hosts(infected_student) -> Dict[str, List[str]]:

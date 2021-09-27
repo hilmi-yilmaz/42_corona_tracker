@@ -24,10 +24,14 @@ class Student:
 		Returns:
 			infected_sessions: (List[Dict]) contains all sessions of the student person for the past days.
 		"""
+		if end_at == None:
+			print("The infected person is currently logged in.")
+			return (False)
 		self.session_id.append(session_id)
 		self.host.append(host)
 		self.begin_at.append(str_to_datetime(begin_at) + timedelta(hours=2))
 		self.end_at.append(str_to_datetime(end_at) + timedelta(hours=2))
+		return (True)
 
 class InfectedStudent(Student):
 

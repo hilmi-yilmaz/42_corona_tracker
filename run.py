@@ -1,10 +1,12 @@
 import argparse
+import sys
 from datetime import datetime, timedelta
 from typing import List, Dict
 
 from corona_tracker_42.api42_wrapper import API42
 from corona_tracker_42.students import InfectedStudent, Student
 from corona_tracker_42.utils import *
+from corona_tracker_42.checks import *
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(
@@ -16,6 +18,9 @@ parser.add_argument("day_positive", type=lambda s: datetime.strptime(s, '%d-%m-%
 parser.add_argument("days_to_check", type=int,
                     help="For how many previous days to check.")
 args = parser.parse_args()
+
+if not check_input(args.day_positive, args.days_to_check):
+	sys.exit("Error.\nMake sure your input is correct.")
 
 # Create an API42 object to make calls with
 api = API42()
@@ -29,7 +34,14 @@ infected_student = InfectedStudent(args.infected_person_login, args.day_positive
 # Get sessions on infected person
 for session in data:
 	if session["user"]["login"] == infected_student.login:
-		infected_student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
+		res = infected_student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
+		if res == -1: # infected student is currently online
+			break
+
+# If no sessions of infected user, exit program
+if not infected_student.session_id:
+	print("Infected person has no sessions in given time period.")
+	sys.exit(1)
 
 # Get contact hosts from the user
 contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student)
