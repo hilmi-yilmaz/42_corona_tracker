@@ -81,15 +81,7 @@ for j in range(len(infected_student.session_id)):
 		else:
 			total_overlap[contact_student.login] = total_overlap_seconds
 
+total_overlap = {login: overlap for login, overlap in total_overlap.items() if overlap > 0}
+
 for login, overlap in total_overlap.items():
 	print("{} logged in for {} next to {}".format(login, str(timedelta(seconds=overlap)), infected_student.login))
-
-# def print_student(student):
-
-# 	print("---------------------------")
-# 	print(student.login)
-# 	for i in range(len(student.session_id)):
-# 		print("{} till {}".format(student.begin_at[i], student.end_at[i]))
-
-# print_student(infected_student)
-# print_student(contact_students[0])
