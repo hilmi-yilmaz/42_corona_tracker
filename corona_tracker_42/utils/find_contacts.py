@@ -70,7 +70,6 @@ def get_contacts(data, contact_hosts, infected_student):
 	"""
 	contact_students: List[Student] = []
 	for infected_host, contact_host in contact_hosts.items():
-		print("contact_host = {}".format(contact_host))
 		for session in data:
 			if session["host"] in contact_host and session["user"]["login"] != infected_student.login:
 				i = is_in_students_list(contact_students, session["user"]["login"])
@@ -95,11 +94,12 @@ def get_overlap_between_contacts(contact_students: List[Student], infected_stude
 				overlap = get_overlap_time(contact_student.begin_at[i], contact_student.end_at[i], infected_student.begin_at[j], infected_student.end_at[j])
 				if overlap.days >= 0:
 					total_overlap_seconds += overlap.seconds
-					print("session: {}, {} sat on {} between {} and {} which overlaps with {} ({}) for {} hours".format(contact_student.session_id[i], contact_student.login, contact_student.host[i], contact_student.begin_at[i], contact_student.end_at[i], infected_student.login, infected_student.host[j], overlap))
+					print("session {}: {} sat on {} between {} and {} which overlaps with {} ({}) for {} hours".format(contact_student.session_id[i], contact_student.login, contact_student.host[i], contact_student.begin_at[i], contact_student.end_at[i], infected_student.login, infected_student.host[j], overlap))
 			if contact_student.login in total_overlap:
 				total_overlap[contact_student.login] += total_overlap_seconds
 			else:
 				total_overlap[contact_student.login] = total_overlap_seconds
 
+	# Remove contacts with 0 overlapping time
 	total_overlap = {login: overlap for login, overlap in total_overlap.items() if overlap > 0}
 	return (total_overlap)

@@ -1,51 +1,5 @@
 from datetime import datetime, timedelta
-from typing import List, Dict
-
-# def get_data(api, day_positive: date, days_to_check: int) -> List[Dict]:
-# 	"""
-# 	Get data from the past few days.
-# 	"""
-# 	date_range: str = "{},{}".format((day_positive - timedelta(days=days_to_check)).strftime("%Y-%m-%dT%H:%M:%SZ"), day_positive.strftime("%Y-%m-%dT%H:%M:%SZ"))
-# 	payload = {"filter[campus_id]": api.campus_id, "range[begin_at]": date_range, "page[size]": 100}
-# 	data: List[Dict] = api.get("locations", payload)
-# 	if not data:
-# 		print("No data available. No one was logged in between {}".format(date_range))
-# 	return (data)
-
-# def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
-# 	"""
-# 	Returns a mapping of infected hosts to contact hosts like:
-# 	{"f1r1s1.codam.nl": [f1r1s2.codam.nl, f1r1s3.codam.nl], ...}
-
-# 	Returns:
-# 		contacts: (List[str]) list containing logins names of contact persons.
-# 	"""
-
-# 	print("Which computers do you want to check?\nEnter the hostnames separated by spaces.")
-# 	print("-------------------------------------------------------------------------------")
-# 	i = 0
-# 	map_host_to_contacts: Dict[str, List[str]] = {}
-# 	for i in range(len(infected_student.session_id)):
-# 		if infected_student.host[i] not in map_host_to_contacts:
-# 			contact_hosts = input("Host {}: ".format(infected_student.host[i])).split(" ")
-# 			# Remove duplicate elements
-# 			contact_hosts = list(dict.fromkeys(contact_hosts))
-# 			# Remove host itself if given as input
-# 			if infected_student.host[i] in contact_hosts:
-# 				contact_hosts.remove(infected_student.host[i])
-# 			# Add to dict
-# 			map_host_to_contacts[infected_student.host[i]] = contact_hosts
-# 		i += 1
-# 	return (map_host_to_contacts)
-
-# def is_in_students_list(contact_students: List, login: str):
-# 	"""
-# 	checks whether the login is already in the contacts students list.
-# 	"""
-# 	for i, student in enumerate(contact_students):
-# 		if student.login == login:
-# 			return (i)
-# 	return (-1)
+#from typing import List, Dict
 
 def get_date_range(day_positive, days_to_check):
 	"""
@@ -101,10 +55,16 @@ def get_overlap_time(begin_at_infected, end_at_infected, begin_at_contact, end_a
 	end_at_contact = end_at_contact
 	return (min(end_at_infected, end_at_contact) - max(begin_at_infected, begin_at_contact))
 
-def print_student(student):
+def print_student(student, file):
 
-	print(student.login)
+	print(f"Sessions of {student.login}", file=file)
 	for i in range(len(student.session_id)):
-		print(student.host[i])
-		print(student.begin_at[i])
-		print(student.end_at[i])
+		print(f"\tHost    : {student.host[i]}",  file=file)
+		print(f"\tBegin_at: {student.begin_at[i].time()}", file=file)
+		print(f"\tEnd_at  : {student.end_at[i].time()}", file=file)
+		if (student.begin_at[i].date() == student.end_at[i].date()):
+			print(f"\tDay     : {student.begin_at[i].date()}", file=file)
+		else:
+			print(f"\tDay     : {student.begin_at[i].date()} | {student.end_at[i].date()}", file=file)
+		print("\t-------------------------", file=file)
+	print("", file=file)

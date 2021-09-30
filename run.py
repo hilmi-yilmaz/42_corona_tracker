@@ -27,8 +27,8 @@ if not check_input(args.day_positive, args.days_to_check):
 api = API42()
 
 # Get data from the API from the past few days (add one so we can check contact that may have overlap but begin_at is the day before)
+print("Getting data from the API..")
 data = get_data(api, args.day_positive, args.days_to_check)
-print("Got data from API")
 
 # Create an object containing information on the student
 infected_student = InfectedStudent(args.infected_person_login, args.day_positive, args.days_to_check)
@@ -36,17 +36,21 @@ infected_student = InfectedStudent(args.infected_person_login, args.day_positive
 # Get sessions on infected person
 get_infected_student_sessions(data, infected_student)
 
-for host in infected_student.host:
-	print(host)
-
 # Get contact hosts from the user
 contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student)
 
-# Get contacts
+# Get contacts (all students who sat on contact hosts during input time range, could also be 0 overlap)
 contact_students = get_contacts(data, contact_hosts, infected_student)
 
 # Get the overlap times between the infected person and the contact persons
 total_overlap = get_overlap_between_contacts(contact_students, infected_student)
 
+# Send data to file about sessions of contact person
+with open ("out.txt", 'w') as f:
+	for contact, overlap in total_overlap.items():
+		for student in contact_students:
+			if student.login == contact:
+				print_student(student, f)
+
 for login, overlap in total_overlap.items():
-	print("{} logged in for {} next to {}".format(login, str(timedelta(seconds=overlap)), infected_student.login))
+	print("{} logged in for a total of {} hours next to {}.".format(login, str(timedelta(seconds=overlap)), infected_student.login))
