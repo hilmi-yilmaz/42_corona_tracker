@@ -1,6 +1,6 @@
 ---
 client_id: "f96527ef63d1cb4246502ec966ebe9cfa23af938518b2b65a8975eba1d508f25"
 client_secret: "72e8470e2305e2fba2d1091dade79c62cc3f3add0601ceec7b9702ba37d2c020"
-campus_id: 1
+campus_id: 14
 token_uri: "https://api.intra.42.fr/v2/oauth/token"
 endpoint: "https://api.intra.42.fr/v2"

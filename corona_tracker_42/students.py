@@ -1,8 +1,6 @@
-import readline
-import time
 from datetime import date, datetime, timedelta
 from typing import Dict, List
-from .utils import *
+from .utils.time import *
 
 class Student:
 

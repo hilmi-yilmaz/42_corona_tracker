@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from typing import List, Dict
 
 def check_input(day_positive: date, days_to_check: int):
