@@ -28,6 +28,7 @@ api = API42()
 
 # Get data from the API from the past few days (add one so we can check contact that may have overlap but begin_at is the day before)
 data = get_data(api, args.day_positive, args.days_to_check)
+print("Got data from API")
 
 # Create an object containing information on the student
 infected_student = InfectedStudent(args.infected_person_login, args.day_positive, args.days_to_check)
@@ -35,8 +36,12 @@ infected_student = InfectedStudent(args.infected_person_login, args.day_positive
 # Get sessions on infected person
 get_infected_student_sessions(data, infected_student)
 
+for host in infected_student.host:
+	print(host)
+
 # Get contact hosts from the user
 contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student)
+print("contact_hosts mapping = {}".format(contact_hosts))
 
 # Get contacts
 contact_students = get_contacts(data, contact_hosts)
