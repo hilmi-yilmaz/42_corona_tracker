@@ -41,10 +41,9 @@ for host in infected_student.host:
 
 # Get contact hosts from the user
 contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student)
-print("contact_hosts mapping = {}".format(contact_hosts))
 
 # Get contacts
-contact_students = get_contacts(data, contact_hosts)
+contact_students = get_contacts(data, contact_hosts, infected_student)
 
 # Get the overlap times between the infected person and the contact persons
 total_overlap = get_overlap_between_contacts(contact_students, infected_student)
