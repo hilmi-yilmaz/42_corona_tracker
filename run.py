@@ -43,10 +43,13 @@ contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student)
 contact_students = get_contacts(data, contact_hosts, infected_student)
 
 # Get the overlap times between the infected person and the contact persons
-total_overlap = get_overlap_between_contacts(contact_students, infected_student)
+total_overlap, output = get_overlap_between_contacts(contact_students, infected_student)
 
 # Send data to file about sessions of contact person
 with open ("out.txt", 'w') as f:
+	print("{:<15} {:<15} {:<20} {:<15} {:<15} {:<15} {:<25} {:<15}".format("session_id", "login", "host", "begin_time", "end_time", "date", "host_infected_person", "overlap"), file=f)
+	print("{}".format(134 * "-"), file=f)
+	print(output, file=f)
 	for contact, overlap in total_overlap.items():
 		for student in contact_students:
 			if student.login == contact:

@@ -65,6 +65,6 @@ def print_student(student, file):
 		if (student.begin_at[i].date() == student.end_at[i].date()):
 			print(f"\tDay     : {student.begin_at[i].date()}", file=file)
 		else:
-			print(f"\tDay     : {student.begin_at[i].date()} | {student.end_at[i].date()}", file=file)
+			print(f"\tDate    : {student.begin_at[i].date()} | {student.end_at[i].date()}", file=file)
 		print("\t-------------------------", file=file)
 	print("", file=file)
