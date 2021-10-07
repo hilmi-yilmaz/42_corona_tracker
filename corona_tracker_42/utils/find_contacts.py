@@ -159,14 +159,17 @@ def get_contacts(data, contact_hosts, infected_student):
 
 	return (contact_students)
 
-def get_overlap_between_contacts(contact_students: List[Student], infected_student: InfectedStudent):
+def get_overlap_between_contacts(contact_students: List[Student], contact_hosts: Dict[str, List[str]], infected_student: InfectedStudent):
 
 	total_overlap: Dict[str, int] = {}
 	output = []
 	for j in range(len(infected_student.session_id)): # loop over infected student sessions
+		c = contact_hosts[infected_student.host[j]] # list contains contact hosts for current infected session host
 		for contact_student in contact_students: # loop over contact students
 			total_overlap_seconds: int = 0
 			for i in range(len(contact_student.session_id)): # loop over sessions of contact student
+				if contact_student.host[i] not in c:
+					continue
 				overlap = get_overlap_time(contact_student.begin_at[i], contact_student.end_at[i], infected_student.begin_at[j], infected_student.end_at[j])
 				if overlap.days >= 0:
 					total_overlap_seconds += overlap.seconds

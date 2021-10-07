@@ -45,7 +45,8 @@ print(contact_hosts)
 contact_students = get_contacts(data, contact_hosts, infected_student)
 
 # Get the overlap times between the infected person and the contact persons
-total_overlap, output = get_overlap_between_contacts(contact_students, infected_student)
+total_overlap, output = get_overlap_between_contacts(contact_students, contact_hosts, infected_student)
+print(output)
 
 # Sort the output by names
 total_overlap = dict(sorted(total_overlap.items()))
