@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-#from typing import List, Dict
 
 def get_date_range(day_positive, days_to_check):
 	"""
@@ -54,26 +53,3 @@ def get_overlap_time(begin_at_infected, end_at_infected, begin_at_contact, end_a
 	end_at_infected = end_at_infected
 	end_at_contact = end_at_contact
 	return (min(end_at_infected, end_at_contact) - max(begin_at_infected, begin_at_contact))
-
-def print_student(student, file):
-
-	print(f"Sessions of {student.login}", file=file)
-	for i in range(len(student.session_id)):
-		print("\t-------------------------", file=file)
-		print(f"\tHost    : {student.host[i]}",  file=file)
-		print(f"\tBegin_at: {student.begin_at[i].time()}", file=file)
-		print(f"\tEnd_at  : {student.end_at[i].time()}", file=file)
-		if (student.begin_at[i].date() == student.end_at[i].date()):
-			print(f"\tDate    : {student.begin_at[i].date()}", file=file)
-		else:
-			print(f"\tDate    : {student.begin_at[i].date()} | {student.end_at[i].date()}", file=file)
-		
-	print("", file=file)
-
-def print_header(string: str, file):
-	print((20 + len(string)) * "#", file=file)
-	print("#" + (18 + len(string)) * " " + "#", file=file)
-	print("#{}{}{}#".format(" " * 9, string, " " * 9), file=file)
-	print("#" + (18 + len(string)) * " " + "#", file=file)
-	print((20 + len(string)) * "#", file=file)
-	print("", file=file)
