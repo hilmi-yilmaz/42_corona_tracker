@@ -59,12 +59,21 @@ def print_student(student, file):
 
 	print(f"Sessions of {student.login}", file=file)
 	for i in range(len(student.session_id)):
+		print("\t-------------------------", file=file)
 		print(f"\tHost    : {student.host[i]}",  file=file)
 		print(f"\tBegin_at: {student.begin_at[i].time()}", file=file)
 		print(f"\tEnd_at  : {student.end_at[i].time()}", file=file)
 		if (student.begin_at[i].date() == student.end_at[i].date()):
-			print(f"\tDay     : {student.begin_at[i].date()}", file=file)
+			print(f"\tDate    : {student.begin_at[i].date()}", file=file)
 		else:
 			print(f"\tDate    : {student.begin_at[i].date()} | {student.end_at[i].date()}", file=file)
-		print("\t-------------------------", file=file)
+		
+	print("", file=file)
+
+def print_header(string: str, file):
+	print((20 + len(string)) * "#", file=file)
+	print("#" + (18 + len(string)) * " " + "#", file=file)
+	print("#{}{}{}#".format(" " * 9, string, " " * 9), file=file)
+	print("#" + (18 + len(string)) * " " + "#", file=file)
+	print((20 + len(string)) * "#", file=file)
 	print("", file=file)

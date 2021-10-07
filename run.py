@@ -47,12 +47,15 @@ total_overlap, output = get_overlap_between_contacts(contact_students, infected_
 
 # Send data to file about sessions of contact person
 with open ("out.txt", 'w') as f:
+	print_header("Summary of total login times", file=f)
 	for login, overlap in total_overlap.items():
 		print("{:<15} logged in for a total of {:<10} hours next to {}".format(login, str(timedelta(seconds=overlap)), infected_student.login), file=f)
 	print("", file=f)
+	print_header("Table containing sessions overlapping with infected person ({})".format(infected_student.login), file=f)
 	print("{:<15} {:<15} {:<20} {:<15} {:<15} {:<15} {:<25} {:<15}".format("session_id", "login", "host", "begin_time", "end_time", "date", "host_infected_person", "overlap"), file=f)
 	print("{}".format(134 * "-"), file=f)
 	print(output, file=f)
+	print_header("Sessions of contact persons", file=f)
 	for contact, overlap in total_overlap.items():
 		for student in contact_students:
 			if student.login == contact:
