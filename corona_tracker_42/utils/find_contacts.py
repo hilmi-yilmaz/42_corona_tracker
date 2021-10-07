@@ -29,6 +29,62 @@ def get_infected_student_sessions(data: List[Dict], infected_student: InfectedSt
 		print("Infected person has no sessions in given time period.")
 		sys.exit(1)
 
+def get_contact_suggestions(host: str):
+	"""
+	Makes a basic suggestion based on host (+1 and -1 location).
+	"""
+	host_list = list(host)
+	contact_list = []
+	if (host[6].isnumeric()):
+		s = int(host[5:7])
+		for i in [-1, 1]:
+			host_list[5:7] = str(s + i)
+			contact_list.append("".join(host_list))
+	else:
+		s = int(host[5])
+		for i in [-1, 1]:
+			host_list[5] = str(s + i)
+			contact_list.append("".join(host_list))
+
+	with open ("hosts") as f:
+		data = f.read()
+		contact_list = [contact for contact in contact_list if contact in data]
+	return (contact_list)
+
+def make_contact_suggestions(host: str):
+	"""
+	Interactive suggestion session.
+	"""
+
+	print("Infected student host: {}\n".format(host))
+
+	# First make a suggestion to the user
+	contact_hosts = get_contact_suggestions(host)
+
+	print("Suggestions:")
+	for contact in contact_hosts:
+		print("--> {}".format(contact))
+
+	print("\n1. Accept suggestions and continue.")
+	print("2. Don't accept suggestions.")
+	print("3. Accept and append to suggenstions.")
+
+	while True:
+		answer = input()
+		if answer == "1" or answer == "2" or answer == "3":
+			break
+
+	if answer == "1":
+		return (contact_hosts)
+	elif answer == "2":
+		contact_hosts = input("Host {}: ".format(host)).split(" ")
+	elif answer == "3":
+		contact_hosts +=  input("Host {}: ".format(host)).split(" ")
+	return (contact_hosts)
+
+	
+
+
 def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
 	"""
 	Returns a mapping of infected hosts to contact hosts like:
@@ -44,12 +100,32 @@ def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
 	map_host_to_contacts: Dict[str, List[str]] = {}
 	for i in range(len(infected_student.session_id)):
 		if infected_student.host[i] not in map_host_to_contacts:
-			contact_hosts = input("Host {}: ".format(infected_student.host[i])).split(" ")
+			# # First make a suggestion to the user
+			# contact_hosts = make_contact_suggestion(infected_student.host[i])
+			# print(contact_hosts)
+			# print("Host {}".format(infected_student.host[i]))
+
+			# print("Suggestions: ", end="")
+			# for contact in contact_hosts:
+			# 	print("{} ".format(contact), end="")
+			# while True:
+			# 	answer = input("\nDo you want to accept the suggestions? (yes/no). If you accept them and want to add more, type a: ")
+			# 	if answer == "yes" or answer == "no" or answer == "a":
+			# 		break
+
+			# if answer == "no":
+			# 	contact_hosts = input("Host {}: ".format(infected_student.host[i])).split(" ")
+			# elif answer == "a":
+			# 	# Ask the user for contact hosts
+			# 	contact_hosts +=  input("Host {}: ".format(infected_student.host[i])).split(" ")
+			contact_hosts = make_contact_suggestions(infected_student.host[i])
+
 			# Remove duplicate elements
 			contact_hosts = list(dict.fromkeys(contact_hosts))
 			# Remove host itself if given as input
 			if infected_student.host[i] in contact_hosts:
 				contact_hosts.remove(infected_student.host[i])
+			
 			# Add to dict
 			map_host_to_contacts[infected_student.host[i]] = contact_hosts
 		i += 1
@@ -94,7 +170,6 @@ def get_overlap_between_contacts(contact_students: List[Student], infected_stude
 				overlap = get_overlap_time(contact_student.begin_at[i], contact_student.end_at[i], infected_student.begin_at[j], infected_student.end_at[j])
 				if overlap.days >= 0:
 					total_overlap_seconds += overlap.seconds
-					#output += "{:<15} {:<15} {:<20} {:<15} {:<15} {:<15} {:<25} {:<15}\n".format(contact_student.session_id[i], contact_student.login, contact_student.host[i], str(contact_student.begin_at[i].time()), str(contact_student.end_at[i].time()), str(contact_student.begin_at[i].date()), infected_student.host[j], str(overlap))
 					output.append((contact_student.session_id[i], contact_student.login, contact_student.host[i], str(contact_student.begin_at[i].time()), str(contact_student.end_at[i].time()), str(contact_student.begin_at[i].date()), infected_student.host[j], str(overlap)))
 			if contact_student.login in total_overlap:
 				total_overlap[contact_student.login] += total_overlap_seconds
