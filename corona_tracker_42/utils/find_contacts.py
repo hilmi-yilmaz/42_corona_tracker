@@ -1,5 +1,6 @@
 import readline
 import sys
+import os
 from datetime import date, timedelta
 from typing import List, Dict
 from ..students import Student, InfectedStudent
@@ -56,6 +57,9 @@ def make_contact_suggestions(host: str):
 	Interactive suggestion session.
 	"""
 
+	# Clear terminal screen
+	os.system('cls' if os.name == 'nt' else 'clear')
+
 	print("Infected student host: {}\n".format(host))
 
 	# First make a suggestion to the user
@@ -94,32 +98,15 @@ def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
 		contacts: (List[str]) list containing logins names of contact persons.
 	"""
 
-	print("Which computers do you want to check?\nEnter the hostnames separated by spaces.")
-	print("-------------------------------------------------------------------------------")
+	#print("Which computers do you want to check?\nEnter the hostnames separated by spaces.")
+	#print("-------------------------------------------------------------------------------")
 	i = 0
 	map_host_to_contacts: Dict[str, List[str]] = {}
 	for i in range(len(infected_student.session_id)):
 		if infected_student.host[i] not in map_host_to_contacts:
-			# # First make a suggestion to the user
-			# contact_hosts = make_contact_suggestion(infected_student.host[i])
-			# print(contact_hosts)
-			# print("Host {}".format(infected_student.host[i]))
 
-			# print("Suggestions: ", end="")
-			# for contact in contact_hosts:
-			# 	print("{} ".format(contact), end="")
-			# while True:
-			# 	answer = input("\nDo you want to accept the suggestions? (yes/no). If you accept them and want to add more, type a: ")
-			# 	if answer == "yes" or answer == "no" or answer == "a":
-			# 		break
-
-			# if answer == "no":
-			# 	contact_hosts = input("Host {}: ".format(infected_student.host[i])).split(" ")
-			# elif answer == "a":
-			# 	# Ask the user for contact hosts
-			# 	contact_hosts +=  input("Host {}: ".format(infected_student.host[i])).split(" ")
+			# Get contact hosts from user (+ suggentions)
 			contact_hosts = make_contact_suggestions(infected_student.host[i])
-
 			# Remove duplicate elements
 			contact_hosts = list(dict.fromkeys(contact_hosts))
 			# Remove host itself if given as input

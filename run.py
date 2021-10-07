@@ -39,14 +39,12 @@ get_infected_student_sessions(data, infected_student)
 
 # Get contact hosts from the user
 contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student)
-print(contact_hosts)
 
 # Get contacts (all students who sat on contact hosts during input time range, could also be 0 overlap)
 contact_students = get_contacts(data, contact_hosts, infected_student)
 
 # Get the overlap times between the infected person and the contact persons
 total_overlap, output = get_overlap_between_contacts(contact_students, contact_hosts, infected_student)
-print(output)
 
 # Sort the output by names
 total_overlap = dict(sorted(total_overlap.items()))
@@ -54,3 +52,8 @@ output.sort(key = lambda x: x[1])
 
 # Output data to out.txt
 print_data(total_overlap, output, infected_student, contact_students)
+
+# Clear terminal screen
+os.system('cls' if os.name == 'nt' else 'clear')
+
+print("See out.txt for the results!")
