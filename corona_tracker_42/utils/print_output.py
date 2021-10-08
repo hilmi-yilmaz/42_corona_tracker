@@ -23,7 +23,7 @@ def print_risky_students(risky_students: Dict[str, List], infected_student, file
 	infected_hosts = list(set(infected_student.host))
 	for host in infected_hosts:
 		if host in risky_students:
-			print("{:<15} sat on {} after {} hours passed.".format(risky_students[host][1], host, str(timedelta(seconds=risky_students[host][0]))), file=file)
+			print("{:<15} sat on {} (infected person session id = {}) after {} hours passed.".format(risky_students[host][1], host, risky_students[host][2],str(timedelta(seconds=risky_students[host][0]))), file=file)
 	print("", file=file)
 
 def print_student(student, file):
@@ -31,13 +31,14 @@ def print_student(student, file):
 	print(f"Sessions of {student.login}", file=file)
 	for i in range(len(student.session_id)):
 		print("\t-------------------------", file=file)
-		print(f"\tHost    : {student.host[i]}",  file=file)
-		print(f"\tBegin_at: {student.begin_at[i].time()}", file=file)
-		print(f"\tEnd_at  : {student.end_at[i].time()}", file=file)
+		print(f"\tSession ID : {student.session_id[i]}",  file=file)
+		print(f"\tHost       : {student.host[i]}",  file=file)
+		print(f"\tBegin_at   : {student.begin_at[i].time()}", file=file)
+		print(f"\tEnd_at     : {student.end_at[i].time()}", file=file)
 		if (student.begin_at[i].date() == student.end_at[i].date()):
-			print(f"\tDate    : {student.begin_at[i].date()}", file=file)
+			print(f"\tDate       : {student.begin_at[i].date()}", file=file)
 		else:
-			print(f"\tDate    : {student.begin_at[i].date()} | {student.end_at[i].date()}", file=file)
+			print(f"\tDate       : {student.begin_at[i].date()} | {student.end_at[i].date()}", file=file)
 		
 	print("", file=file)
 

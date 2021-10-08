@@ -187,7 +187,7 @@ def get_student_sat_on_infected_host(data, infected_student) -> Dict[str, int]:
 					time_elapsed = time_elapsed.seconds + 86400 * time_elapsed.days
 					if session["host"] in student_sat_on_infected_host:
 						if time_elapsed < student_sat_on_infected_host[session["host"]][0]:
-							student_sat_on_infected_host[session["host"]] = [time_elapsed, session["user"]["login"]]
+							student_sat_on_infected_host[session["host"]] = [time_elapsed, session["user"]["login"], infected_student.session_id[i]]
 					else:
-						student_sat_on_infected_host[session["host"]] = [time_elapsed, session["user"]["login"]]
+						student_sat_on_infected_host[session["host"]] = [time_elapsed, session["user"]["login"], infected_student.session_id[i]]
 	return (student_sat_on_infected_host)

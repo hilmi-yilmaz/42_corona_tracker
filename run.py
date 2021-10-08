@@ -28,7 +28,7 @@ if not check_input(args.day_positive, args.days_to_check):
 api = API42()
 
 # Get data from the API from the past few days (add one so we can check contact that may have overlap but begin_at is the day before)
-print("Getting data from the API..")
+print("Getting data from the API...")
 data = get_data(api, args.day_positive, args.days_to_check)
 
 # Create an object containing information on the student
@@ -52,15 +52,11 @@ output.sort(key = lambda x: x[1])
 
 # Get the person who sat on infected host after infected person sat there
 risky_students = get_student_sat_on_infected_host(data, infected_student)
-# print(risky_students)
-# for k, v in risky_students.items():
-# 	v[0] = str(timedelta(seconds=v[0]))
-# print(risky_students)
 
 # Output data to out.txt
 print_data(total_overlap, output, infected_student, contact_students, risky_students)
 
 # Clear terminal screen
-#os.system('cls' if os.name == 'nt' else 'clear')
+os.system('cls' if os.name == 'nt' else 'clear')
 
 print("See out.txt for the results!")
