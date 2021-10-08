@@ -1,6 +1,6 @@
 import sys
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 from typing import List, Dict
 
 from corona_tracker_42.api42_wrapper import API42
@@ -50,10 +50,17 @@ total_overlap, output = get_overlap_between_contacts(contact_students, contact_h
 total_overlap = dict(sorted(total_overlap.items()))
 output.sort(key = lambda x: x[1])
 
+# Get the person who sat on infected host after infected person sat there
+risky_students = get_student_sat_on_infected_host(data, infected_student)
+# print(risky_students)
+# for k, v in risky_students.items():
+# 	v[0] = str(timedelta(seconds=v[0]))
+# print(risky_students)
+
 # Output data to out.txt
-print_data(total_overlap, output, infected_student, contact_students)
+print_data(total_overlap, output, infected_student, contact_students, risky_students)
 
 # Clear terminal screen
-os.system('cls' if os.name == 'nt' else 'clear')
+#os.system('cls' if os.name == 'nt' else 'clear')
 
 print("See out.txt for the results!")

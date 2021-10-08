@@ -1,10 +1,10 @@
 import readline
 import sys
 import os
-from datetime import date, timedelta
+from datetime import date, time, timedelta
 from typing import List, Dict
 from ..students import Student, InfectedStudent
-from .time import get_overlap_time
+from .time import *
 
 def get_data(api, day_positive: date, days_to_check: int) -> List[Dict]:
 	"""
@@ -47,6 +47,7 @@ def get_contact_suggestions(host: str):
 			host_list[5] = str(s + i)
 			contact_list.append("".join(host_list))
 
+	# If host not in hosts file, remove
 	with open ("hosts") as f:
 		data = f.read()
 		contact_list = [contact for contact in contact_list if contact in data]
@@ -169,3 +170,24 @@ def get_overlap_between_contacts(contact_students: List[Student], contact_hosts:
 	# Remove contacts with 0 overlapping time
 	total_overlap = {login: overlap for login, overlap in total_overlap.items() if overlap > 0}
 	return (total_overlap, output)
+
+def get_student_sat_on_infected_host(data, infected_student) -> Dict[str, int]:
+	"""
+	Returns the student that sat on the computer where the infected host sat.
+	"""
+	student_sat_on_infected_host = {}
+	for session in data:
+		for i in range(len(infected_student.session_id)):		
+			if session["host"] == infected_student.host[i] and session["user"]["login"] != infected_student.login:
+				# student = Student(session["user"]["login"])
+				# student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
+				time_elapsed = (str_to_datetime(session["begin_at"]) + timedelta(hours=2)) - infected_student.end_at[i]
+				if time_elapsed.days >= 0:
+					#print("login = {}, host = {}, begin_at = {}, time_elapsed = {}".format(session["user"]["login"], session["host"], str_to_datetime(session["begin_at"]) + timedelta(hours=2), time_elapsed))
+					time_elapsed = time_elapsed.seconds + 86400 * time_elapsed.days
+					if session["host"] in student_sat_on_infected_host:
+						if time_elapsed < student_sat_on_infected_host[session["host"]][0]:
+							student_sat_on_infected_host[session["host"]] = [time_elapsed, session["user"]["login"]]
+					else:
+						student_sat_on_infected_host[session["host"]] = [time_elapsed, session["user"]["login"]]
+	return (student_sat_on_infected_host)
