@@ -45,6 +45,7 @@ def print_student(student, file):
 def print_data(total_overlap, output, infected_student, contact_students, risky_students):
 
 	with open ("out.txt", 'w') as f:
+		print("{} tested positive on {}. Checking overlaps between {} and {}.\n".format(infected_student.login, infected_student.day_positive, (infected_student.day_positive - timedelta(days=infected_student.days_to_check)).strftime("%Y-%m-%d (%H:%M:%S)"), infected_student.day_positive.strftime("%Y-%m-%d (%H:%M:%S)")), file=f)
 		print_header("Summary of total login times", file=f)
 		for login, overlap in total_overlap.items():
 			print("{:<15} logged in for a total of {:<10} hours next to {}".format(login, str(timedelta(seconds=overlap)), infected_student.login), file=f)
