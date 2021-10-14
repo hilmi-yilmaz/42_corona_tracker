@@ -1,14 +1,65 @@
-# codam_corona_tracker
+# 42_corona_tracker
 
 This application tracks people who sat close to a recently infected person. It can be used to immediately notify students that may be at risk.
-Getting the security footage and looking through it may take a longer time, so an initial check on who sat close to the infected person could save potential infections.
+It could also help to find the infected person on the security tape because of the login times.
 
 ## Description
+---
 
 This program makes use of the 42 API. It asks data from the API to which people sat close to the infected person and also for how long.
 
-## Installation and setup
+## Prerequisites
+---
+- Python version 3 or higher.
+- PIP
 
+## Installation and setup
+---
+### __1. Create a 42 APP__ 
+
+Login to intra and go to -> settings -> API -> register a new app (top right).
+
+For website just type __placeholder__ and for Redirect URI type __https://placeholder.com__.
+
+### __2. Clone this repo.__
+
+```sh
+git clone https://github.com/hilmi-yilmaz/codam_corona_tracker.git
+```
+
+### 3. __Insert data__
+
+Insert __UID__ and __SECRET__ of your 42 APP into the __config.yaml__ file between quotes.
+
+Insert your campus ID in the __config.yaml__ file.
+
+### 4. __Create a virtual environment using venv__
+If you don't have venv module install, install like:
+
+```sh
+pip install virtualenv
+```
+
+Create a virtual environment:
+
+```sh
+python3 -m venv ENV
+```
+
+Activate the environment
+
+```sh
+source ENV/bin/activate
+```
+
+### 5. __Install packages__
+Install required packages
+
+```sh
+pip install -r requirements.txt
+```
+
+Everything is setup now and you can use the program.
 
 ## Usage
 ---
@@ -33,10 +84,127 @@ python3 run.py hyilmaz 19-09-2021 2
 
 the program will output the data for 18-09-2021 and 17-09-2021 (2 days).
 
-## Roadmap
-- Create a GUI for Codam (42 Amsterdam) specific.
+## Example output
+
+```
+hyilmaz tested positive on 2021-10-13. Checking overlaps between 2021-10-11 (00:00:00) and 2021-10-13 (00:00:00).
+
+################################################
+#                                              #
+#         Summary of total login times         #
+#                                              #
+################################################
+
+Ji-Won          logged in for a total of 2:51:02    hours next to hyilmaz
+Thor            logged in for a total of 7:54:05    hours next to hyilmaz
+Eustorgo        logged in for a total of 6:42:43    hours next to hyilmaz
+Karel           logged in for a total of 4:51:04    hours next to hyilmaz
+
+########################################################################################
+#                                                                                      #
+#         Table containing sessions overlapping with infected person (hyilmaz)         #
+#                                                                                      #
+########################################################################################
+
+session_id      login           host                 begin_time      end_time        date            host_infected_person      overlap        
+--------------------------------------------------------------------------------------------------------------------------------------
+13212057        Ji-Won          f1r3s11.codam.nl     15:06:09        18:51:15        2021-10-11      f1r3s12.codam.nl          2:51:02        
+13220952        Thor            f1r1s16.codam.nl     19:21:03        21:51:03        2021-10-12      f1r1s17.codam.nl          0:42:05        
+13219716        Thor            f1r1s16.codam.nl     15:54:02        18:33:03        2021-10-12      f1r1s17.codam.nl          2:39:01        
+13215438        Thor            f1r1s16.codam.nl     07:33:04        15:30:31        2021-10-12      f1r1s17.codam.nl          4:32:59        
+13217034        Eustorgo        f1r1s18.codam.nl     12:02:25        19:09:08        2021-10-12      f1r1s17.codam.nl          3:26:58        
+13217034        Eustorgo        f1r1s18.codam.nl     12:02:25        19:09:08        2021-10-12      f1r1s17.codam.nl          3:15:45        
+13211618        Karel           f1r3s13.codam.nl     13:06:07        18:30:49        2021-10-11      f1r3s12.codam.nl          4:51:04        
+
+#####################################################
+#                                                   #
+#         Student that sat on infected host         #
+#                                                   #
+#####################################################
+
+jobvan-d        sat on f1r3s12.codam.nl (infected person session id = 13211161) after 17:35:57 hours passed.
+
+################################################
+#                                              #
+#         Sessions of infected student         #
+#                                              #
+################################################
+
+Sessions of hyilmaz
+	-------------------------
+	Session ID : 13219627
+	Host       : f1r1s17.codam.nl
+	Begin_at   : 15:42:10
+	End_at     : 20:03:08
+	Date       : 2021-10-12
+	-------------------------
+	Session ID : 13216479
+	Host       : f1r1s17.codam.nl
+	Begin_at   : 10:45:11
+	End_at     : 15:18:10
+	Date       : 2021-10-12
+	-------------------------
+	Session ID : 13211161
+	Host       : f1r3s12.codam.nl
+	Begin_at   : 10:39:34
+	End_at     : 17:57:11
+	Date       : 2021-10-11
+
+################################################
+#                                              #
+#         Sessions of contact students         #
+#                                              #
+################################################
+
+Sessions of Ji-Won
+	-------------------------
+	Session ID : 13212057
+	Host       : f1r3s11.codam.nl
+	Begin_at   : 15:06:09
+	End_at     : 18:51:15
+	Date       : 2021-10-11
+
+Sessions of Thor    
+	-------------------------
+	Session ID : 13220952
+	Host       : f1r1s16.codam.nl
+	Begin_at   : 19:21:03
+	End_at     : 21:51:03
+	Date       : 2021-10-12
+	-------------------------
+	Session ID : 13219716
+	Host       : f1r1s16.codam.nl
+	Begin_at   : 15:54:02
+	End_at     : 18:33:03
+	Date       : 2021-10-12
+	-------------------------
+	Session ID : 13215438
+	Host       : f1r1s16.codam.nl
+	Begin_at   : 07:33:04
+	End_at     : 15:30:31
+	Date       : 2021-10-12
+
+Sessions of Eustorgo
+	-------------------------
+	Session ID : 13217034
+	Host       : f1r1s18.codam.nl
+	Begin_at   : 12:02:25
+	End_at     : 19:09:08
+	Date       : 2021-10-12
+
+Sessions of Karel   
+	-------------------------
+	Session ID : 13211618
+	Host       : f1r3s13.codam.nl
+	Begin_at   : 13:06:07
+	End_at     : 18:30:49
+	Date       : 2021-10-11
+```
 
 ## Contribute
 
+If you find any bugs or problems with this program, feel free to file a new issue.
 
 ## License
+
+[MIT](https://opensource.org/licenses/MIT)
