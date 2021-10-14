@@ -4,17 +4,17 @@ This application tracks people who sat close to a recently infected person. It c
 It could also help to find the infected person on the security tape because of the login times.
 
 ## Description
----
+
 
 This program makes use of the 42 API. It asks data from the API to which people sat close to the infected person and also for how long.
 
 ## Prerequisites
----
+
 - Python version 3 or higher.
 - PIP
 
 ## Installation and setup
----
+
 ### __1. Create a 42 APP__ 
 
 Login to intra and go to -> settings -> API -> register a new app (top right).
@@ -62,7 +62,6 @@ pip install -r requirements.txt
 Everything is setup now and you can use the program.
 
 ## Usage
----
 
 Run:
 
@@ -122,7 +121,7 @@ session_id      login           host                 begin_time      end_time   
 #                                                   #
 #####################################################
 
-jobvan-d        sat on f1r3s12.codam.nl (infected person session id = 13211161) after 17:35:57 hours passed.
+mairlijn        sat on f1r3s12.codam.nl (infected person session id = 13211161) after 17:35:57 hours passed.
 
 ################################################
 #                                              #
