@@ -1,4 +1,5 @@
 corona_tracker_env/
+ENV/
 __pycache__/
 .vscode/
 .mypy_cache/
