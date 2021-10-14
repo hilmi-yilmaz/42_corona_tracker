@@ -38,7 +38,7 @@ infected_student = InfectedStudent(args.infected_person_login, args.day_positive
 get_infected_student_sessions(data, infected_student)
 
 # Get contact hosts from the user
-contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student)
+contact_hosts: Dict[str, List[str]] = get_contact_hosts(infected_student, api.campus_id)
 
 # Get contacts (all students who sat on contact hosts during input time range, could also be 0 overlap)
 contact_students = get_contacts(data, contact_hosts, infected_student)

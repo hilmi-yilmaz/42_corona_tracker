@@ -87,10 +87,8 @@ def make_contact_suggestions(host: str):
 		contact_hosts +=  input("Host {}: ".format(host)).split(" ")
 	return (contact_hosts)
 
-	
 
-
-def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
+def get_contact_hosts(infected_student, campus_id) -> Dict[str, List[str]]:
 	"""
 	Returns a mapping of infected hosts to contact hosts like:
 	{"f1r1s1.codam.nl": [f1r1s2.codam.nl, f1r1s3.codam.nl], ...}
@@ -99,15 +97,16 @@ def get_contact_hosts(infected_student) -> Dict[str, List[str]]:
 		contacts: (List[str]) list containing logins names of contact persons.
 	"""
 
-	#print("Which computers do you want to check?\nEnter the hostnames separated by spaces.")
-	#print("-------------------------------------------------------------------------------")
 	i = 0
 	map_host_to_contacts: Dict[str, List[str]] = {}
 	for i in range(len(infected_student.session_id)):
 		if infected_student.host[i] not in map_host_to_contacts:
 
 			# Get contact hosts from user (+ suggentions)
-			contact_hosts = make_contact_suggestions(infected_student.host[i])
+			if campus_id == 14:
+				contact_hosts = make_contact_suggestions(infected_student.host[i])
+			else:
+				contact_hosts = input("Host {}: ".format(infected_student.host[i])).split(" ")
 			# Remove duplicate elements
 			contact_hosts = list(dict.fromkeys(contact_hosts))
 			# Remove host itself if given as input
@@ -130,7 +129,7 @@ def is_in_students_list(contact_students: List, login: str):
 
 def get_contacts(data, contact_hosts, infected_student):
 	"""
-	Gets the contact hosts.
+	Gets the contact students.
 	"""
 	contact_students: List[Student] = []
 	for infected_host, contact_host in contact_hosts.items():
@@ -148,7 +147,9 @@ def get_contacts(data, contact_hosts, infected_student):
 	return (contact_students)
 
 def get_overlap_between_contacts(contact_students: List[Student], contact_hosts: Dict[str, List[str]], infected_student: InfectedStudent):
-
+	"""
+	Calculate the overlap between the infected student and contact students.
+	"""
 	total_overlap: Dict[str, int] = {}
 	output = []
 	for j in range(len(infected_student.session_id)): # loop over infected student sessions
