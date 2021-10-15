@@ -1,8 +1,11 @@
+# Standard library
+import os
 import sys
 import argparse
-from datetime import datetime, time, timedelta
+from datetime import datetime
 from typing import List, Dict
 
+# Local library
 from corona_tracker_42.api42_wrapper import API42
 from corona_tracker_42.students import InfectedStudent, Student
 from corona_tracker_42.utils.find_contacts import *
@@ -21,6 +24,7 @@ parser.add_argument("days_to_check", type=int, nargs="?",
                     help="For how many previous days to check.")
 args = parser.parse_args()
 
+# Check the input
 if not check_input(args.day_positive, args.days_to_check):
 	sys.exit("Error.\nMake sure your input is correct.")
 

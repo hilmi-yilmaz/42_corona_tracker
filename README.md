@@ -6,7 +6,7 @@ It could also help to find the infected person on the security tape because of t
 ## Description
 
 
-This program makes use of the 42 API. It asks data from the API to which people sat close to the infected person and also for how long.
+This program outputs overlapping logging times between an infected student and contacts of this student. See the example output below.
 
 ## Prerequisites
 
