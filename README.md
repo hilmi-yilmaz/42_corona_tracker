@@ -73,7 +73,9 @@ python3 run.py login_name date_infected how_many_days_to_check
 
 - login_name: the intra login name of the infected person
 - date_infected: the date the person got infected in the format day-month-year (e.g. 15-01-2021).
-- how_many_days_to_check: how many days to check.
+- how_many_days_to_check: how many days to check. (The more, the longer the programs runs.)
+
+It will give you the hosts the infected student set on. You have to enter the hosts you want to check.
 
 ## Output
 

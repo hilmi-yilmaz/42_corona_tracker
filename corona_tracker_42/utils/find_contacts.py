@@ -47,10 +47,11 @@ def get_contact_hosts(infected_student, campus_id) -> Dict[str, List[str]]:
 		if infected_student.host[i] not in map_host_to_contacts:
 
 			# Get contact hosts from user (+ suggentions)
-			if campus_id == 14:
+			if campus_id == 14:		# make suggestions for Codam (42 Amsterdam)
 				contact_hosts = make_contact_suggestions(infected_student.host[i])
 			else:
-				contact_hosts = input("Host {}: ".format(infected_student.host[i])).split(" ")
+				print("\nEnter the contact hosts you want to check separated by spaces:")
+				contact_hosts = input("Infected student host {}: ".format(infected_student.host[i])).split(" ")
 			# Remove duplicate elements
 			contact_hosts = list(dict.fromkeys(contact_hosts))
 			# Remove host itself if given as input
