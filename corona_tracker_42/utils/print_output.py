@@ -60,7 +60,7 @@ def print_data(total_overlap, output, infected_student, contact_students, risky_
 		for login, overlap in total_overlap.items():
 			print("{:<15} logged in for a total of {:<10} hours next to {}".format(login, str(timedelta(seconds=overlap)), infected_student.login), file=f)
 		print("", file=f)
-		print_header("Table containing sessions that contributed to overlapping time. ({})".format(infected_student.login), file=f)
+		print_header("Table containing sessions that contributed to overlapping time ({})".format(infected_student.login), file=f)
 		print("{:<15} {:<15} {:<20} {:<15} {:<15} {:<15} {:<25} {:<15}".format("session_id", "login", "host", "begin_time", "end_time", "date", "host_infected_person", "overlap"), file=f)
 		print("{}".format(134 * "-"), file=f)
 		print_overlap_sessions(output, f)

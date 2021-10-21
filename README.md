@@ -1,7 +1,8 @@
 # 42_corona_tracker
 
-This application tracks people who sat close to a recently infected person. It can be used to immediately notify students that may be at risk.
-It could also help to find the infected person on the security tape because of the login times.
+This application tracks people who sat close to a recently infected student. It can be used to immediately notify students that may be at risk.
+
+If the campus uses the security footage to find all contacts of an infected student, this program can help track the infected person in the security footage faster because of the listing of all sessions in the output file.
 
 ## Description
 
@@ -84,7 +85,7 @@ The program outputs the following statistics:
 - Sessions of infected student.
 - Sessions of contact persons.
 
-### Example
+## Example
 
 If you run:
 
@@ -94,27 +95,27 @@ python3 run.py hyilmaz 19-09-2021 2
 
 the program will output the data for 18-09-2021 and 17-09-2021 (2 days).
 
-## Example output
+### Example output
 
 ```
 hyilmaz tested positive on 2021-10-13. Checking overlaps between 2021-10-11 (00:00:00) and 2021-10-13 (00:00:00).
 
-################################################
-#                                              #
-#         Summary of total login times         #
-#                                              #
-################################################
+############################################################
+#                                                          #
+#         Summary of total overlapping login times         #
+#                                                          #
+############################################################
 
 Ji-Won          logged in for a total of 2:51:02    hours next to hyilmaz
 Thor            logged in for a total of 7:54:05    hours next to hyilmaz
 Eustorgo        logged in for a total of 6:42:43    hours next to hyilmaz
 Karel           logged in for a total of 4:51:04    hours next to hyilmaz
 
-########################################################################################
-#                                                                                      #
-#         Table containing sessions overlapping with infected person (hyilmaz)         #
-#                                                                                      #
-########################################################################################
+#############################################################################################
+#                                                                                           #
+#         Table containing sessions that contributed to overlapping time (hyilmaz)         #
+#                                                                                           #
+#############################################################################################
 
 session_id      login           host                 begin_time      end_time        date            host_infected_person      overlap        
 --------------------------------------------------------------------------------------------------------------------------------------
@@ -210,6 +211,9 @@ Sessions of Karel
 	End_at     : 18:30:49
 	Date       : 2021-10-11
 ```
+
+## Roadmap
+1. Add evaluations (need more permissions for the 42 API).
 
 ## Contribute
 
