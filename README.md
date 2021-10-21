@@ -12,6 +12,7 @@ This program outputs overlapping logging times between an infected student and c
 
 - Python version 3 or higher.
 - PIP
+- Venv (to create a virtual environment)
 
 ## Installation and setup
 
@@ -72,6 +73,16 @@ python3 run.py login_name date_infected how_many_days_to_check
 - login_name: the intra login name of the infected person
 - date_infected: the date the person got infected in the format day-month-year (e.g. 15-01-2021).
 - how_many_days_to_check: how many days to check.
+
+## Output
+
+The program outputs the following statistics:
+
+- Summary of total overlapping login times.
+- Sessions that contributed to overlapping time.
+- Student that sat on an infected host (the host that the infected person left).
+- Sessions of infected student.
+- Sessions of contact persons.
 
 ### Example
 

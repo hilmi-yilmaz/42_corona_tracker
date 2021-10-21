@@ -14,11 +14,13 @@ def get_data(api, day_positive: date, days_to_check: int) -> List[Dict]:
 	payload = {"filter[campus_id]": api.campus_id, "range[begin_at]": date_range, "page[size]": 100}
 	data: List[Dict] = api.get("locations", payload)
 	if not data:
-		print("No data available. No one was logged in between {}".format(date_range))
+		sys.exit("No data available. No one was logged in between {}".format(date_range))
 	return (data)
 
 def get_infected_student_sessions(data: List[Dict], infected_student: InfectedStudent):
-
+	"""
+	Find all sessions of the infected student.
+	"""
 	for session in data:
 		if session["user"]["login"] == infected_student.login:
 			res = infected_student.append_session(session["id"], session["host"], session["begin_at"], session["end_at"])
@@ -116,7 +118,7 @@ def get_overlap_between_contacts(contact_students: List[Student], contact_hosts:
 
 def get_student_sat_on_infected_host(data, infected_student) -> Dict[str, int]:
 	"""
-	Returns the student that sat on the computer where the infected host sat.
+	Returns the student that sat on an infected host computer.
 	"""
 	student_sat_on_infected_host = {}
 	for session in data:

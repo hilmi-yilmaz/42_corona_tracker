@@ -56,6 +56,7 @@ output.sort(key = lambda x: x[1])
 
 # Get the person who sat on infected host after infected person sat there
 risky_students = get_student_sat_on_infected_host(data, infected_student)
+print(risky_students)
 
 # Output data to out.txt
 print_data(total_overlap, output, infected_student, contact_students, risky_students)

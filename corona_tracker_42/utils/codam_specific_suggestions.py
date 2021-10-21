@@ -2,7 +2,7 @@ import os
 
 def get_contact_suggestions(host: str):
 	"""
-	Makes a basic suggestion based on host (+1 and -1 location).
+	Makes a basic suggestion based on host (+1 and -1 computer).
 	"""
 	host_list = list(host)
 	contact_list = []

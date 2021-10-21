@@ -2,6 +2,9 @@ from typing import List, Tuple, Dict
 from datetime import timedelta
 
 def print_header(string: str, file):
+	"""
+	Creates a header for the inputted string.
+	"""
 	print((20 + len(string)) * "#", file=file)
 	print("#" + (18 + len(string)) * " " + "#", file=file)
 	print("#{}{}{}#".format(" " * 9, string, " " * 9), file=file)
@@ -10,6 +13,9 @@ def print_header(string: str, file):
 	print("", file=file)
 
 def print_overlap_sessions(output: List[Tuple], file):
+	"""
+	Print 
+	"""
 	for session in output:
 		print("{0[0]:<15} {0[1]:<15} {0[2]:<20} {0[3]:<15} {0[4]:<15} {0[5]:<15} {0[6]:<25} {0[7]:<15}".format(session), file=file)
 	print("", file=file)
@@ -27,7 +33,9 @@ def print_risky_students(risky_students: Dict[str, List], infected_student, file
 	print("", file=file)
 
 def print_student(student, file):
-
+	"""
+	Print the sessions of a given student.
+	"""
 	print(f"Sessions of {student.login}", file=file)
 	for i in range(len(student.session_id)):
 		print("\t-------------------------", file=file)
@@ -43,14 +51,16 @@ def print_student(student, file):
 	print("", file=file)
 
 def print_data(total_overlap, output, infected_student, contact_students, risky_students):
-
+	"""
+	Print all the information into out.txt.
+	"""
 	with open ("out.txt", 'w') as f:
 		print("{} tested positive on {}. Checking overlaps between {} and {}.\n".format(infected_student.login, infected_student.day_positive, (infected_student.day_positive - timedelta(days=infected_student.days_to_check)).strftime("%Y-%m-%d (%H:%M:%S)"), infected_student.day_positive.strftime("%Y-%m-%d (%H:%M:%S)")), file=f)
-		print_header("Summary of total login times", file=f)
+		print_header("Summary of total overlapping login times", file=f)
 		for login, overlap in total_overlap.items():
 			print("{:<15} logged in for a total of {:<10} hours next to {}".format(login, str(timedelta(seconds=overlap)), infected_student.login), file=f)
 		print("", file=f)
-		print_header("Table containing sessions overlapping with infected person ({})".format(infected_student.login), file=f)
+		print_header("Table containing sessions that contributed to overlapping time. ({})".format(infected_student.login), file=f)
 		print("{:<15} {:<15} {:<20} {:<15} {:<15} {:<15} {:<25} {:<15}".format("session_id", "login", "host", "begin_time", "end_time", "date", "host_infected_person", "overlap"), file=f)
 		print("{}".format(134 * "-"), file=f)
 		print_overlap_sessions(output, f)
