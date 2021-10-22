@@ -6,4 +6,4 @@ __pycache__/
 test*.py
 *.sql
 out.txt
-config.yaml
+sample_config.yaml

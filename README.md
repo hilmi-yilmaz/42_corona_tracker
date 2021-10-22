@@ -31,9 +31,9 @@ git clone https://github.com/hilmi-yilmaz/codam_corona_tracker.git
 
 ### 3. __Insert data__
 
-Insert __UID__ and __SECRET__ of your 42 APP into the __config.yaml__ file between quotes.
+Insert __UID__ and __SECRET__ (both strings) of your 42 APP into the __config.yaml__ file between quotes.
 
-Insert your campus ID in the __config.yaml__ file.
+Insert your campus ID in the __config.yaml__ file (integer).
 
 ### 4. __Create a virtual environment using venv__
 If you don't have venv module install, install like:

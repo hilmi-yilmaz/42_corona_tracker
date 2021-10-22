@@ -1,0 +1,6 @@
+---
+client_id: "your client id"
+client_secret: "your client secret"
+campus_id: 14
+token_uri: "https://api.intra.42.fr/v2/oauth/token"
+endpoint: "https://api.intra.42.fr/v2"
